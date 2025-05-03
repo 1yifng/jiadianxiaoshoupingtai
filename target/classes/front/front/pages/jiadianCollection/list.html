@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>商品收藏</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+    <!-- 引入element样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    .center-container {
+        width: 1200px;
+        margin: 0 auto;
+        margin-top: 20px;
+        display: flex;
+        margin-bottom: 20px;
+    }
+    .proleft {
+        width: 280px;
+        background: #fff;
+        padding-top: 30px;
+    }
+
+    .proleft .lefttit-bg {
+        background: var(--publicMainColor);
+        width: 90%;
+        padding-left: 20px;
+        padding-bottom: 10px;
+    }
+
+    .proleft .p2 {
+        font-size: 26px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .proleft .p3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .ul1 {
+        padding-left: 27px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .ul1 li {
+        position: relative;
+    }
+
+    .ul1 li {
+        font-size: 15px;
+        color: #000;
+        padding: 10px 0px 10px 35px;
+        display: block;
+        transition: all 0.6s;
+    }
+
+    .ul1 li b {
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 10px;
+        height: 1px;
+        background: #aaaaaa;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.6s;
+    }
+
+    .ul1 li.on b, .ul1 li:hover b {
+        width: 31px;
+        background: var(--publicMainColor);
+        margin-right: 20px;
+    }</style>
+<body class='bodyClass'>
+<div id="app">
+
+
+<div class="center-container">
+        <!-- 个人中心菜单 config.js-->
+ <div class="proleft fl" style="width: 20%;">
+     <div class="lefttit">
+         <div class="lefttit-bg">
+             <p class="p2">USER / CENTER</p>
+             <p class="p3">商品收藏</p>
+         </div>
+     </div>
+     <ul class="ul1">
+         <li v-for="(item,index) in centerMenu" v-bind:key="index" :class="item.url=='../jiadianCollection/list.html'?'on':''" @click="jump(item.url)">
+             <b></b>{{item.name}}
+         </li>
+     </ul>
+ </div>        <!-- 个人中心菜单 -->
+        <div class="right-container sub_borderColor" :style='{"padding":"20px","boxShadow":"0px rgba(255,0,0,.8)","margin":"0","backgroundColor":"#fff","borderRadius":"0","borderWidth":"1px","borderStyle":"solid","width":"80%"}'>
+            <div style="display: flex;flex-wrap: wrap;justify-content: space-evenly;">
+                <div v-for="(item,index) in dataList" :key="index" style="flex: 0 0 25%;padding: 3px">
+                    <div :style='{"padding":"10px","borderColor":"var(--publicSubColor)","boxShadow":"0 0 6px var(--publicSubColor)","margin":"0 0 10px 0","borderColor":"rgba(0,0,0,.3)","backgroundColor":"#fff","borderRadius":"4px","borderWidth":"0","borderStyle":"solid"}'>
+                            <!-- 使用 Element UI 按钮替代 Layui 图标 -->
+                            <el-button @click="deleteJiadianCollection(item.id)" type="danger" icon="el-icon-delete" size="mini" circle class="delete-btn"></el-button>
+                    <!-- class="animation-box"-->
+                        <img @click="jumpCheck('../jiadian/detail.html?id='+item.jiadianId , item.jiadianDelete == null?'':item.jiadianDelete , item.shangxiaTypes == null?'':item.shangxiaTypes)"
+                             :style='{"boxShadow":"0 0 0px rgba(255,0,0,.8)","borderColor":"rgba(0,0,0,.3)","borderRadius":"0","borderWidth":"0","width":"100%","borderStyle":"solid","height":"230px"}'
+                             :src="item.jiadianPhoto?baseUrl+item.jiadianPhoto.split(',')[0]:''">
+                        <div @click="jumpCheck('../jiadian/detail.html?id='+item.jiadianId , item.jiadianDelete == null?'':item.jiadianDelete , item.shangxiaTypes == null?'':item.shangxiaTypes)">
+                            <div v-if="item.jiadianNewMoney"
+                                 :style='{"padding":"0","margin":"10px 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"red","borderRadius":"0","textAlign":"left","width":"100%","fontSize":"16px"}'>
+                                {{item.jiadianNewMoney}} RMB
+                            </div>
+                            <div v-else
+                                 :style='{"padding":"0","margin":"10px 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"red","borderRadius":"0","textAlign":"left","width":"100%","fontSize":"16px"}'>
+                                {{item.jiadianValue}}
+                            </div>
+                            <div :style='{"isshow":true,"padding":"0","margin":"5px 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"#666","borderRadius":"0","textAlign":"right","width":"100%","fontSize":"12px"}'>
+                                {{item.jiadianName}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 使用 Element UI 分页 -->
+            <div class="pager">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入 axios 工具 -->
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<!-- 组件配置信息 -->
+<script src="../../js/config.js"></script>
+<!-- 扩展插件配置信息 -->
+<script src="../../modules/config.js"></script>
+<!-- 工具方法 -->
+<script src="../../js/utils.js"></script>
+
+<script type="text/javascript">
+    Vue.prototype.myFilters = function (msg) {
+        if(msg==null || msg==""){
+            return "";
+        }else if (msg.length>20){
+            msg.replace(/\n/g, "<br>");
+            return msg.substring(0,30)+"......";
+        }else{
+            return msg.replace(/\n/g, "<br>");
+        }
+    };
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            userId: localStorage.getItem("userid"),//当前登录人的id
+            sessionTable: localStorage.getItem("userTable"),//登录账户所在表名
+            role: localStorage.getItem("role"),//权限
+            user:{},//当前登录用户信息
+            centerMenu: centerMenu,
+            baseUrl : (window.baseUrl || '') + '/jiadianxiaoshoupingtai/',
+            showContentModal:false,
+            showContent:"",
+
+
+            //查询条件 (分页信息移到下面)
+            searchForm: {
+                 sort: "id"//字段
+                ,order: "desc"//asc desc
+                ,jiadianCollectionTypes: 1 // 保持此条件
+                ,yonghuId : localStorage.getItem('userid')
+                ,jiadianName: null
+                ,jiadianTypes: null
+            },
+            dataList: [],
+            // 分页相关
+            currentPage: 1,
+            pageSize: 10, // 保持和原 limit 一致
+            total: 0,
+        },
+        filters: {
+            subString: function(val) {
+                if (val) {
+                    val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');
+                    if (val.length > 60) {
+                        val = val.substring(0, 60);
+                        val+='...';
+                    }
+                    return val;
+                }
+                return '';
+            }
+        },
+        computed: {
+        },
+        mounted() {
+            // 设置 localStorage 中的跳转地址
+            localStorage.setItem("goUtl","./pages/jiadianCollection/list.html");
+            // 获取用户信息
+            this.getUserInfo();
+            // 获取收藏列表数据
+            this.fetchDataList();
+        },
+        methods: {
+            jump(url) {
+                jump(url);
+            },
+            // 更新 jumpCheck 使用 Element UI 提示
+            jumpCheck(url,check1,check2) {
+                if(check1 == "2" || check1 == 2){//级联表的逻辑删除字段[1:未删除 2:已删除]
+                    this.$message.warning("商品已被删除");
+                    return false;
+                }
+                if(check2 == "2"  || check2 == 2){//是否下架[1:上架 2:下架]
+                    this.$message.warning("商品已经下架");
+                    return false;
+                }
+                this.jump(url);
+            },
+            showContentFunction(content) {
+                this.showContentModal=true;
+                this.showContent=content.replaceAll("src=\"upload/","src=\""+this.baseUrl+"upload/");
+            },
+
+            // 更新 deleteJiadianCollection 使用 Element UI 确认框和 Axios
+            deleteJiadianCollection(id){
+                this.$confirm('确认要删除这个收藏吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 确认删除
+                    server.post('jiadianCollection/delete1', [id]).then(res => { // 使用 server.post
+                        if (res.code == 0) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            // 删除成功后刷新列表，回到第一页或当前页
+                            this.fetchDataList(); // 刷新当前页
+                            // 或者 this.currentPage = 1; this.fetchDataList(); // 回到第一页
+                        } else {
+                            this.$message.error(res.msg);
+                        }
+                    }).catch(err => {
+                        this.$message.error('请求失败');
+                    });
+                }).catch(() => {
+                    // 用户点击取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            // 获取用户信息
+            getUserInfo() {
+                let table = localStorage.getItem("userTable");
+                if(table){
+                    server.get(`${table}/session`).then(res => { // 使用 server.get
+                        if (res.code === 0) {
+                            this.user = res.data;
+                        } else {
+                            // this.$message.error(res.msg); // 可选：提示获取失败
+                        }
+                    }).catch(err => {
+                        // this.$message.error('获取用户信息请求失败'); // 可选：提示请求失败
+                    });
+                }
+            },
+            // 获取数据列表
+            fetchDataList() {
+                const params = {
+                    page: this.currentPage,
+                    limit: this.pageSize,
+                    sort: this.searchForm.sort,
+                    order: this.searchForm.order,
+                    yonghuId: this.searchForm.yonghuId,
+                    jiadianCollectionTypes: this.searchForm.jiadianCollectionTypes,
+                    // 添加其他需要的查询参数
+                    jiadianName: this.searchForm.jiadianName,
+                    jiadianTypes: this.searchForm.jiadianTypes,
+                };
+                server.get('jiadianCollection/list', { params: params }).then(res => { // 使用 server.get
+                    if (res.code === 0) {
+                        this.dataList = res.data.list;
+                        this.total = res.data.total;
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }).catch(err => {
+                    this.$message.error('获取收藏列表失败');
+                });
+            },
+            // 处理每页显示条数变化
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.currentPage = 1; // 切换每页条数时，回到第一页
+                this.fetchDataList();
+            },
+            // 处理当前页变化
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.fetchDataList();
+            },
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<!-- 修改头部引用，移除layui相关引用 -->
+<head lang="en">
+    <meta charset="utf-8">
+    <title>商品</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 移除layui引用 -->
+    <!-- <link rel="stylesheet" href="../../layui/css/layui.css"> -->
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <script type="text/javascript" src="../../xznstatic/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+    <!-- 引入Element UI样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    .list-item3B {
+        flex: 0 0 32%;
+    }
+
+    ul.short_ls li a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    ul.short_ls li {
+        list-style: none;
+        display: inline-block;
+        letter-spacing: 1px;
+        font-size: 14px;
+    }
+
+    .event-right.wthree-event-right {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    .event-right.wthree-event-right {
+        width: 96%;
+    }
+
+    .event-right.wthree-event-right {
+        width: 85%;
+    }
+
+    .event-right.wthree-event-right {
+        width: 100%;
+    }
+
+    .tags1 h3{
+        font-size: 25px;
+        color: #212121;
+        position: relative;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.27);
+        font-weight: 500;
+    }
+
+    .tags1 {
+        margin-top: 30px;
+    }
+
+    .tags1 {
+        padding: 30px;
+        border: 1px solid rgba(56, 54, 54, 0.32);
+        background: #fff;
+    }
+
+    .tags1 ul {
+        padding: 5px 0 0 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .tags ul li {
+        margin: 2px 0;
+        display: inline-block;
+    }
+
+    .tags ul li a {
+        padding: 7px 10px;
+        border: 1px solid rgba(153, 153, 153, 0.4);
+        color: #212121;
+        text-decoration: none;
+        margin: 0 5px 0 0em;
+        display: block;
+        font-size: 14px;
+    }
+
+    @media (max-width: 1080px) {
+    }
+
+    .button-submit {
+        font-family: 'Montserrat', sans-serif;
+        transition: 0.5s all;
+        -webkit-transition: 0.5s all;
+        -moz-transition: 0.5s all;
+        -o-transition: 0.5s all;
+        -ms-transition: 0.5s all;
+        letter-spacing: 1px;
+    }
+
+    .button-submit {
+        transition: 0.5s all;
+        -webkit-transition: 0.5s all;
+        -moz-transition: 0.5s all;
+        -o-transition: 0.5s all;
+        -ms-transition: 0.5s all;
+        letter-spacing: 1px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .event-right .button-submit{
+        width: 100px;
+        outline: none;
+        padding: 12px 12px;
+        text-align: center;
+        color: #fff;
+        border: none;
+        font-size: 1em;
+        margin: 1em 0 0;
+        letter-spacing: 1px;
+        background: #111;
+    }
+
+    .event-right .button-submit:hover {
+        background: var(--publicMainColor);
+    }
+
+    .event-right .search-input {
+        margin: 5px 0;
+        outline: none;
+        padding: 12px;
+        text-align: center;
+        color: #333;
+        border: 1px solid rgba(56, 54, 54, 0.32);
+        font-size: 16px;
+        width: 100%;
+        background: #fff;
+        letter-spacing: 1px;
+    }
+
+    input::-webkit-input-placeholder {
+        color: #333 ;
+    }</style>
+<body class='bodyClass'>
+<div id="app">
+
+<section class="blog-one ">
+    <div class="container py-3">
+        <!-- 商品页面左边的商品图片、商品名、商品价格与分页展示 -->
+        <div class="row">
+
+            <div style="width: 760px;margin-top: 13px">
+                            
+            <div style="display: flex;flex-wrap: wrap;justify-content: space-evenly;">
+                <!-- 循环渲染商品列表项，dataList 是包含商品数据的数组 -->
+                <div v-for="(item,index) in dataList" :key="index" class="list-item3B list-item5">
+                                <div class="animation-box" @click="jump('../jiadian/detail.html?id='+item.id)" class="list-item-body animation-box" :style='{"padding":"0","boxShadow":"0 0 6px #fff","margin":"3px 10px","borderColor":"var(--publicMainColor)","backgroundColor":"#fff","borderRadius":"170px 170px 0 0","borderWidth":"17px","borderStyle":"solid"}'>
+                        <!-- 商品图片，根据商品数据动态设置图片源和样式 -->
+                        <img :style='{"boxShadow":"0 0 0px rgba(255,0,0,.8)","borderColor":"rgba(65, 81, 169, 1)","borderRadius":"170px 170px 0 0","borderWidth":"0","width":"240px","borderStyle":"solid","height":"250px"}' :src="item.jiadianPhoto?(baseUrl+'/'+item.jiadianPhoto.split(',')[0]):''">
+                        <div>
+                            <!--
+                            商品名称显示区域，使用插值表达式{{item.jiadianName}}显示商品名称。
+                            - :style绑定了一组CSS样式，用于设置文本的样式。
+                            -->
+                            <div :style='{"isshow":true,"padding":"10px ","margin":"0 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"rgba(71, 71, 71, 1)","borderRadius":"0","textAlign":"center","width":"100%","fontSize":"20px"}'>{{item.jiadianName}}</div>
+                            <!--
+                            商品新价格显示区域，仅当item.jiadianNewMoney存在时显示现价。
+                            - :style绑定了一组CSS样式，用于设置文本的样式。
+                            - 使用Number(item.jiadianNewMoney).toFixed(2)将价格格式化为保留两位小数的数字。
+                            -->
+                            <div v-if="item.jiadianNewMoney" :style='{"padding":"10px","margin":"0 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"red","borderRadius":"0","textAlign":"center","width":"100%","fontSize":"26px"}' class="price"><span :style='{"fontSize":"12px"}'>￥</span>{{Number(item.jiadianNewMoney).toFixed(2)}}</div>
+                            <!--
+                            商品其他值显示区域，当item.jiadianNewMoney不存在时显示原价。
+                            - :style绑定了一组CSS样式，用于设置文本的样式。
+                            -->
+                            <div v-else :style='{"isshow":true,"padding":"10px ","margin":"5px 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"rgba(71, 71, 71, 1)","borderRadius":"0","textAlign":"center","width":"100%","fontSize":"20px"}'>{{item.jiadianValue}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 修改分页部分，使用Element UI分页组件 -->
+            <div class="pager" id="pager" :style="{textAlign:'center'}">
+<!--        <el - pagination> 是 Element UI 框架中的一个分页组件，用于将数据分割成多个页面显示-->
+<!--        @size - change="sizeChangeHandle"：当用户改变每页显示的条目数时，会触发 sizeChangeHandle 方法。可以在该方法中根据新的每页显示条数--limit来更新数据列表。-->
+<!--        @current - change="currentChangeHandle"：当用户切换页码时，会触发 currentChangeHandle 方法。该方法会接收到当前切换到的页码作为参数，通常用于根据新的页码更新数据展示。-->
+<!--        :current - page="searchForm.page"：绑定当前显示的页码，searchForm.page 是在 Vue 实例中定义的一个数据属性，用于存储当前页码的值。通过这种绑定，分页组件会根据 searchForm.page 的值来显示当前处于哪一页，并且当用户点击页码切换时，也会自动更新 searchForm.page 的值。-->
+<!--        :page - sizes="[10]"：设置可供用户选择的每页显示条目数的选项，目前只提供了一个选项 10，表示用户只能选择每页显示 10 条数据。-->
+<!--        :page - size="searchForm.limit"：绑定当前每页实际显示的条目数，searchForm.limit 是 Vue 实例中定义的属性，用于存储当前设置的每页显示条数。分页组件会根据这个值来确定每页展示多少条数据，并且当用户通过 page - sizes 选项改变每页显示条数时，searchForm.limit 的值也会相应更新。-->
+<!--        layout="total, sizes, prev, pager, next, jumper"：定义分页组件的布局，指定了要显示的元素及其顺序。total 表示显示数据总条数；sizes 是每页显示条数的选择框；prev 是上一页按钮；pager 是页码列表；next 是下一页按钮；jumper 是跳转到指定页码的输入框。-->
+<!--        :total="total"：绑定数据的总条数，total 应该是在 Vue 实例中定义的一个数据属性，用于存储数据的总数。分页组件会根据这个值以及 page - size 的值来计算总页数，并正确地显示页码和进行分页导航。-->
+            <el-pagination
+            @size-change="sizeChangeHandle"
+            @current-change="currentChangeHandle"
+            :current-page="searchForm.page"
+            :page-sizes="[10]"
+            :page-size="searchForm.limit"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+            </el-pagination>
+            </div>
+            </div>
+
+<!--            商品页面右边的搜索+商品类型展示-->
+            <div class="col-lg-4 event-right wthree-event-right">
+                <ul class="short_ls" style="margin: 5px">
+                    <li style="font-size: 20px">
+                        <a href="../home/home.html">首页</a>
+                        <span>/</span>
+                    </li>
+                    <li>商品</li>
+                </ul>
+                <form>
+                    <el-input v-model="searchForm.jiadianName" placeholder="商品名称" autocomplete="off"
+                           class="search-input"></el-input>             
+                    <div style="display: flex;justify-content: space-evenly;align-items: center;">
+                        <el-button type="primary" @click="pageList" class="button-submit"><i class="el-icon-search"></i>搜索</el-button>
+                    </div>
+                </form>
+                <div class="tags tags1">
+                    <h3>商品类型</h3>
+                    <ul>
+                        <li class="thisTableType-search" @click="searchForm.jiadianTypes = ''; pageList();">
+                            <a :class='searchForm.jiadianTypes=="" || searchForm.jiadianTypes==null?"thisTableType-search-hover":""'>全部</a>
+                        </li>
+                        <!-- 循环渲染商品类型列表项，jiadianTypesList 是包含商品类型数据的数组 -->
+                        <li v-for="(item,index) in jiadianTypesList" :key="item.codeIndex"  class="thisTableType-search" @click="searchForm.jiadianTypes = item.codeIndex; pageList();">
+                            <a :class='searchForm.jiadianTypes==item.codeIndex?"thisTableType-search-hover":""'>{{item.indexName}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section></div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入axios -->
+<script src="../../js//axios.min.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+<!-- 引入request.js -->
+<script src="../../js/request.js"></script>
+
+<script type="text/javascript">
+    // 定义 Vue 原型方法 myFilters，用于处理文本内容
+    Vue.prototype.myFilters = function (msg) {
+        // 如果消息为空或空字符串，返回空字符串
+        if (msg == null || msg == "") {
+            return "";
+        } else if (msg.length > 20) {
+            // 将字符串中的换行符替换为 HTML 换行标签
+            msg = msg.replace(/\n/g, "<br>");
+            // 截取前 30 个字符并添加省略号
+            return msg.substring(0, 30) + "......";
+        } else {
+            // 将字符串中的换行符替换为 HTML 换行标签并返回
+            return msg.replace(/\n/g, "<br>");
+        }
+    };
+
+    // 创建 Vue 实例
+    var vue = new Vue({
+        // 绑定到 HTML 中 id 为 app 的元素
+        el: '#app',
+        // 数据对象，包含了组件的各种数据
+        data: {
+            userId: localStorage.getItem("userid"), // 当前登录人的 id，从本地存储中获取
+            sessionTable: localStorage.getItem("userTable"), // 登录账户所在表名，从本地存储中获取
+            role: localStorage.getItem("role"), // 权限，从本地存储中获取
+            user: {}, // 当前登录用户信息的空对象
+            // 小菜单数据，这里假设 centerMenu 是一个外部定义的数组
+            centerMenu: centerMenu,
+            // 项目路径
+            baseUrl: "",
+            // 弹出内容模态框相关数据
+            showContentModal: false, // 控制模态框是否显示
+            showContent: "", // 模态框中显示的内容
+            jiadianTypesList: [], // 存储商品类型列表
+            shangxiaTypesList: [], // 存储上下架类型列表（似乎未使用）
+            // 查询条件数据
+            searchForm: {
+                page: 1, // 当前页码
+                limit: 10, // 每页显示数量
+                sort: 'jiadian_clicknum', // 排序字段--按照商品热度--点击数去排
+                order: "desc", // 排序方式（降序）
+                jiadianDelete: 1, // 商品删除状态（1 表示未删除）
+                shangxiaTypes: 1, // 上下架状态（1 表示上架）
+                jiadianName: "", // 商品名称
+                jiadianUuidNumber: "", // 商品唯一编号
+                jiadianPhoto: "", // 商品图片
+                jiadianTypes: "", // 商品类型
+                jiadianContent: "" // 商品内容
+            },
+            total: 0, // 用于存储数据总数量，配合分页使用
+            dataList: [], // 存储商品数据列表
+        },
+        // 过滤器，用于处理商品介绍的文本内容
+        filters: {
+            subString: function (val) {
+                // 如果值存在
+                if (val) {
+                    // 移除所有 HTML 标签和替换 undefined 字符串
+                    val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');
+                    // 如果值的长度大于 60
+                    if (val.length > 60) {
+                        // 截取前 60 个字符并添加省略号
+                        val = val.substring(0, 60);
+                        val += '...';
+                    }
+                    // 返回处理后的值
+                    return val;
+                }
+                // 如果值不存在，返回空字符串
+                return '';
+            }
+        },
+        // 方法对象，包含了组件的各种方法
+        methods: {
+            // 页面跳转方法
+            jump(url) {
+                jump(url);
+            },
+            // 显示弹出内容模态框的方法
+            showContentFunction(content) {
+                // 显示模态框
+                this.showContentModal = true;
+                // 替换内容中的图片路径为完整路径
+                this.showContent = content.replaceAll("src=\"upload/", "src=\"" + this.baseUrl + "upload/");
+            },
+            // 删除数据的方法
+            deleteData(data) {
+                // 弹出确认对话框
+                var mymessage = confirm("确定要删除这条数据吗？");
+                // 如果用户取消操作，返回 false
+                if (!mymessage) {
+                    return false;
+                }
+                // 使用 server.post 发送请求删除数据
+                server.post(`jiadian/delete`, [data.id]).then(res => {
+                    // 如果请求成功
+                    if (res.code == 0) {
+                        // 显示成功消息并刷新页面
+                        this.$message.success('操作成功');
+                        window.location.reload();
+                    } else {
+                        // 如果请求失败，显示错误消息
+                        this.$message.error(res.msg);
+                    }
+                });
+            },
+            // 处理分页大小变化的方法
+            sizeChangeHandle(val) {
+                // 更新每页显示数量
+                this.searchForm.limit = val;
+                // 重置页码为第一页
+                this.searchForm.page = 1;
+                // 重新获取数据列表
+                this.pageList();
+            },
+            // 处理当前页码变化的方法
+            currentChangeHandle(val) {
+                // 更新当前页码
+                this.searchForm.page = val;
+                // 重新获取数据列表
+                this.pageList();
+            },
+            // 获取数据列表的方法
+            pageList() {
+                // 使用 server.get 发送请求获取数据列表
+                server.get('jiadian/list', {
+                    params: this.searchForm
+                }).then(res => {
+                    // 如果请求成功
+                    if (res.code === 0) {
+                        // 更新数据列表和数据总数量
+                        this.dataList = res.data.list;
+                        this.total = res.data.total;
+                    } else {
+                        // 如果请求失败，显示错误消息
+                        this.$message.error(res.msg || '获取数据失败');
+                    }
+                }).catch(err => {
+                    // 如果请求出错，在控制台打印错误信息并显示网络错误消息
+                    console.error('请求出错:', err);
+                    this.$message.error('网络错误，请检查网络连接');
+                });
+            }
+        },
+        // 生命周期钩子函数，在组件挂载完成后执行
+        mounted() {
+            // 设置 localStorage 中的跳转地址
+            localStorage.setItem("goUtl", "./pages/jiadian/list.html");
+            // 设置正确的项目路径 baseUrl
+            this.baseUrl = (window.baseUrl || '') + '/jiadianxiaoshoupingtai';
+
+            // 获取用户信息
+            let table = localStorage.getItem("userTable");
+            if (table) {
+                server.get(table + "/session").then(res => {
+                    if (res.code === 0) {
+                        this.user = res.data;
+                    }
+                });
+            }
+
+            // 获取商品类型列表
+            server.get("dictionary/page", {
+                params: {
+                    page: 1,
+                    limit: 100,
+                    sort: '',
+                    order: '',
+                    dicCode: 'jiadian_types'
+                }
+            }).then(res => {
+                if (res.code === 0) {
+                    this.jiadianTypesList = res.data.list;
+                }
+            });
+            // 初始加载数据列表
+            this.pageList();
+        }
+    });
+</script>
+</body>
+</html>

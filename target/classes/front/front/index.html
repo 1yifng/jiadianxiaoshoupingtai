@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>家电展示销售平台</title>
+    <link rel="stylesheet" href="./elementui/elementui.css">
+    <link rel="stylesheet" href="./xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="./xznstatic/css/style.css"/>
+    <!-- 添加Element UI兼容CSS替代Layui兼容CSS -->
+    <link rel="stylesheet" href="./css/element-compatibility.css"/>
+    <link rel="stylesheet" href="css/theme.css"/>
+    <style>
+        /* 添加Element UI导航样式 */
+        .el-menu-item.is-active {
+            color: var(--publicMainColor) !important;
+            border-bottom: 2px solid var(--publicMainColor) !important;
+        }
+        .el-menu--horizontal>.el-menu-item {
+            height: 50px;
+            line-height: 50px;
+        }
+        .current {
+            color: var(--publicMainColor) !important;
+            border-bottom: 2px solid var(--publicMainColor) !important;
+        }
+    </style>
+</head>
+<body class='bodyClass' style="height: 100%;overflow: hidden">
+
+<div id="header">
+    <div v-if='true' class="nav-top">
+        <div v-if="true" class="nav-top-title">{{projectName}}</div>
+        <div class="nav-top-tel"></div>
+    </div>
+    <div class="navs">
+        <div class="title" v-if="false" v-text="projectName"></div>
+        <div class="list">
+            <ul>
+                <li class='current'><a href="javascript:navPage('./pages/home/home.html')" class="menumain"><i
+                        v-if="false" class="el-icon-s-home"></i>首页</a></li>
+                <li v-for="(item,index) in indexNav" v-bind:key="index"><a
+                        :href="'javascript:navPage(\''+item.url+'\')'" class="menumain" style="cursor: pointer;"><i
+                        v-if="false" class="el-icon" :class="iconArr[index]"></i>{{item.name}}</a></li>
+                <li><a href="javascript:centerPage();" class="menumain"><i v-if="false"
+                                                                           class="el-icon-user"></i>个人中心</a>
+                </li>
+                <li><a href="javascript:navPage('./pages/cart/list.html')" class="menumain"><i v-if="false"
+                                                                                               class="el-icon-shopping-cart-2"></i>购物车</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div style="height: 85vh" class="homeHeight">
+    <iframe src="./pages/home/home.html" id="iframe" frameborder="0" scrolling="auto" style="width:100%;height: 100%;" onload="changeFrameHeight"></iframe>
+</div>
+
+
+<script src="./xznstatic/js/jquery-1.11.3.min.js"></script>
+<!--引入vue.js-->
+<script src="./js/vue.js"></script>
+<!-- 引入ElementUI组件库 -->
+<script src="./elementui/elementui.js"></script>
+<!-- 添加自定义的兼容层 -->
+<script src="./js/http.js"></script>
+<!-- 引入axios工具 -->
+<script src="./js/request.js"></script>
+<!-- 替换layer.js为Element UI的消息提示 -->
+<script src="./js/element-layer.js"></script>
+<script src="./js/config.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#header',
+        data: {
+            iconArr: ['el-icon-gift','el-icon-message','el-icon-switch-button','el-icon-share','el-icon-picture','el-icon-printer','el-icon-tickets','el-icon-ice-cream','el-icon-notebook-1','el-icon-s-flag','el-icon-brush','el-icon-website','el-icon-monitor','el-icon-surprised','el-icon-notebook-2','el-icon-menu','el-icon-reading','el-icon-cherry','el-icon-document','el-icon-connection','el-icon-collection-tag','el-icon-document-add','el-icon-chat-dot-square'],
+            indexNav: indexNav,
+            adminurl: adminurl,
+            projectName: projectName,
+            url:"./pages/home/home.html",
+        },
+        mounted: function() {
+            this.bindClickOnLi();
+        },
+        created() {
+            this.iconArr.sort(()=>{
+                return (0.5-Math.random())
+            })
+        },
+        methods: {
+            jump(url) {
+                jump(url)
+            },
+            bindClickOnLi() {
+                let list = document.getElementsByTagName("li");
+                for(var i = 0;i<list.length;i++){
+                    list[i].onclick = function(){
+                        $(this).addClass("current").siblings().removeClass("current");
+                    }
+                }
+            }
+        }
+    });
+
+    // 替代原有的layui.use函数调用
+    (function() {
+        //用于跳转所需要的路径
+        if(localStorage.getItem("goUtl") != null){
+            vue.url = localStorage.getItem("goUtl")
+            localStorage.removeItem("goUtl")
+        }else if(http.getParam('url') != null){
+            vue.url = http.getParam('url')
+        }
+
+        document.getElementById('iframe').src = vue.url;
+    })();
+
+    // 使用Element UI的对话框替代layer
+    function chatTap(){
+        var userTable = localStorage.getItem('userTable');
+        if (userTable) {
+            // 使用Element UI的对话框
+            const h = this.$createElement;
+            const iframe = document.createElement('iframe');
+            iframe.src = './pages/chat/list.html';
+            iframe.width = '100%';
+            iframe.height = '550px';
+            iframe.frameBorder = '0';
+            
+            ELEMENT.MessageBox({
+                title: '客服',
+                message: h('div', null, [iframe]),
+                showCancelButton: false,
+                confirmButtonText: '关闭',
+                customClass: 'el-message-box--large'
+            });
+        } else {
+            window.location.href = './pages/login/login.html'
+        }
+    }
+
+    // 导航栏跳转
+    function navPage(url) {
+        localStorage.setItem('iframeUrl', url);
+        document.getElementById('iframe').src = url;
+    }
+
+    // 跳转到个人中心
+    function centerPage() {
+        var userTable = localStorage.getItem('userTable');
+        if (userTable) {
+            localStorage.setItem('iframeUrl', './pages/' + userTable + '/center.html');
+            document.getElementById('iframe').src = './pages/' + userTable + '/center.html';
+        } else {
+            window.location.href = './pages/login/login.html'
+        }
+    }
+
+    var iframeUrl = localStorage.getItem('iframeUrl');
+    document.getElementById('iframe').src = iframeUrl  || './pages/home/home.html';
+
+    setInterval(function(){
+        changeFrameHeight();
+    },200)
+
+    function changeFrameHeight() {
+        var iframe = document.getElementById('iframe');
+        if (iframe) {
+            var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+            if (iframeWin.document.body) {
+                iframe.height = iframeWin.document.body.scrollHeight;
+            }
+        }
+    };
+
+    // reasize 事件 窗口大小变化后执行的方法
+    window.onresize = function() {
+        changeFrameHeight();
+    }
+</script>
+</body>
+</html>

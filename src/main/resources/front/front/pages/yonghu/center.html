@@ -1,0 +1,581 @@
+<!-- 个人中心 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>个人中心</title>
+    <!-- 移除 layui.css -->
+    <!-- <link rel="stylesheet" href="../../layui/css/layui.css"> -->
+    <!-- 引入element样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <!-- 样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <!-- 主题（主要颜色设置） -->
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <!-- 通用的css -->
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+</head>
+<style>
+    html::after {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        content: '';
+        display: block;
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+    }
+
+    /*小菜单*/
+    .proleft {
+        width: 280px;
+        background: #fff;
+        padding-top: 30px;
+    }
+
+    .proleft .lefttit-bg {
+        background: var(--publicMainColor);
+        width: 90%;
+        padding-left: 20px;
+        padding-bottom: 10px;
+    }
+
+    .proleft .p2 {
+        font-size: 26px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .proleft .p3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .fl {
+        float: left;
+    }
+
+    .fr {
+        float: right;
+    }
+
+    .ul1 {
+        padding-left: 27px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .ul1 li {
+        position: relative;
+    }
+
+    .ul1 li {
+        font-size: 15px;
+        color: #000;
+        padding: 10px 0px 10px 35px;
+        display: block;
+        transition: all 0.6s;
+    }
+
+    .ul1 li b {
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 10px;
+        height: 1px;
+        background: #aaaaaa;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.6s;
+    }
+
+    .ul1 li.on b, .ul1 li:hover b {
+        width: 31px;
+        background: var(--publicMainColor);
+        margin-right: 20px;
+    }
+
+    .ul1 li.on, .ul1 li:hover {
+        color: var(--publicMainColor);
+        margin-left: 20px;
+    }
+    /*信息样式*/
+    .center-container {
+        width: 1200px;
+        margin: 0 auto;
+        margin-top: 20px;
+        text-align: left;
+        display: flex;
+        margin-bottom: 20px;
+    }
+    .right-container {
+        position: relative;
+    }
+    .right-container .layui-form-item {
+        display: flex;
+        align-items: center;
+    }
+    .right-container .layui-input-block {
+        margin: 0;
+        flex: 1;
+    }
+    .right-container .input .layui-input {
+        padding: 0 12px;
+        height: 40px;
+        font-size: 15px;
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        background-color: #fff;
+        text-align: left;
+    }
+    .right-container .select .layui-input {
+        padding: 0 12px;
+        height: 40px;
+        font-size: 15px;
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        background-color: #fff;
+        text-align: left;
+    }
+    .right-container .date .layui-input {
+        padding: 0 12px;
+        height: 40px;
+        font-size: 15px;
+        color: rgba(160, 67, 26, 1);
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        background-color: #fff;
+        box-shadow: 0 0 0px rgba(255,0,0,.8);
+        text-align: left;
+    }
+
+</style>
+<body class='bodyClass'>
+<div id="app">
+    <!-- 标题 -->
+    <div class="center-container">
+        <!-- 个人中心菜单 config.js-->
+        <div class="proleft fl" style="width: 20%;">
+            <div class="lefttit">
+                <div class="lefttit-bg">
+                    <p class="p2">USER / CENTER</p>
+                    <p class="p3">个人中心</p>
+                </div>
+            </div>
+            <ul class="ul1">
+                <li v-for="(item,index) in centerMenu" v-bind:key="index" :class="index==0?'on':''"
+                    @click="jump(item.url)">
+                    <b></b>{{item.name}}
+                </li>
+            </ul>
+        </div>            <!-- 个人中心菜单 -->
+        <!-- 个人中心 -->
+        <div class="right-container sub_borderColor" :style='{"backgroundColor":"#fff","padding":"20px","boxShadow":"0px rgba(255,0,0,.8)","margin":"0","backgroundColor":"#fff","borderRadius":"0","borderWidth":"1px","borderStyle":"solid","width":"80%"}'>
+            <!-- 使用 el-form 替换 layui-form -->
+            <el-form :model="detail" ref="ruleForm" label-width="110px" class="demo-ruleForm" v-if="!changePassword">
+                <!-- 主键 -->
+                <input type="hidden" v-model="detail.id" />
+                <!-- 使用 el-form-item 和 el-input -->
+                <el-form-item label="账户" prop="username" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input v-model="detail.username" placeholder="账户" readonly></el-input> <!-- 账户通常只读 -->
+                </el-form-item>
+                <el-form-item label="用户姓名" prop="yonghuName" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input v-model="detail.yonghuName" placeholder="用户姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="联系方式" prop="yonghuPhone" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input v-model="detail.yonghuPhone" placeholder="联系方式"></el-input>
+                </el-form-item>
+<!--                <el-form-item label="身份证号" prop="yonghuIdNumber" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>-->
+<!--                    <el-input v-model="detail.yonghuIdNumber" placeholder="身份证号"></el-input>-->
+<!--                </el-form-item>-->
+                <!-- 使用 el-upload 替换 layui upload -->
+                <el-form-item label="用户头像" prop="yonghuPhoto" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-upload
+                        class="avatar-uploader"
+                        :action="baseUrl + 'file/upload'"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload"
+                        :headers="uploadHeaders">
+                        <img v-if="detail.yonghuPhoto" :src="detail.yonghuPhoto.startsWith('http') ? detail.yonghuPhoto : baseUrl + detail.yonghuPhoto" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <!-- 使用 el-select -->
+                <el-form-item label="性别" prop="sexTypes" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-select v-model="detail.sexTypes" filterable placeholder="请选择性别">
+                        <el-option
+                                v-for="(item,index) in sexTypesList"
+                                v-bind:key="item.codeIndex"
+                                :label="item.indexName"
+                                :value="item.codeIndex">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="电子邮箱" prop="yonghuEmail" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input v-model="detail.yonghuEmail" placeholder="电子邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="余额" prop="newMoney" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input type="number" v-model="detail.newMoney" placeholder="余额" disabled></el-input>
+                    <!-- 使用 el-button 替换充值链接 -->
+                    <el-button type="text" @click="handleRecharge" style="margin-left: 10px;">点我充值</el-button>
+                </el-form-item>
+
+                <!-- 使用 el-button 替换 layui-btn -->
+                <el-form-item style="text-align: center;">
+                    <el-button type="primary" @click="updateUserInfo" :style='{"padding":"0 10px","boxShadow":"0 0 0px rgba(255,0,0,.5)","margin":"10px auto 0","borderColor":"#ccc","color":"#fff","borderRadius":"8px","borderWidth":"0","width":"30%","fontSize":"15px","borderStyle":"solid","height":"44px"}'>更新信息</el-button>
+                    <el-button @click="xiugaimima()" :style='{"padding":"0 10px","boxShadow":"0 0 0px rgba(255,0,0,.5)","margin":"10px auto","borderColor":"#ccc","backgroundColor":"var(--publicSubColor)","color":"rgba(255, 255, 255, 1)","borderRadius":"8px","borderWidth":"0","width":"30%","fontSize":"14px","borderStyle":"solid","height":"44px"}'>修改密码</el-button>
+                    <el-button type="danger" @click="logout" :style='{"padding":"0 10px","boxShadow":"0 0 0px rgba(255,0,0,.5)","margin":"10px auto","borderColor":"#ccc","backgroundColor":"rgba(255, 0, 0, 1)","color":"rgba(255, 255, 255, 1)","borderRadius":"8px","borderWidth":"0","width":"30%","fontSize":"14px","borderStyle":"solid","height":"44px"}'>退出登录</el-button>
+                </el-form-item>
+            </el-form>
+
+            <!-- 修改密码部分，使用 el-form, el-form-item, el-input, el-button -->
+            <el-form :model="passwordForm" ref="passwordFormRef" label-width="110px" v-if="changePassword" style="width: 778px;margin: 10px auto;">
+                 <el-form-item label="旧密码" prop="oldPassword" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input type="password" v-model="passwordForm.oldPassword" placeholder="旧密码"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="newPassword" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input type="password" v-model="passwordForm.newPassword" placeholder="新密码"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="confirmPassword" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"0 0 10px 0","backgroundColor":"#fff","borderRadius":"1px","borderWidth":"0 0 1px 0","borderStyle":"solid"}'>
+                    <el-input type="password" v-model="passwordForm.confirmPassword" placeholder="确认密码"></el-input>
+                </el-form-item>
+                <el-form-item style="text-align: center;">
+                    <el-button @click="back()" :style='{"padding":"0 10px","boxShadow":"0 0 0px rgba(255,0,0,.5)","margin":"10px auto 0","borderColor":"#ccc","color":"#fff","backgroundColor":"#6495ed","borderRadius":"8px","borderWidth":"0","width":"30%","fontSize":"15px","borderStyle":"solid","height":"44px"}'>返回</el-button>
+                    <el-button type="danger" @click="queren()" :style='{"padding":"0 10px","boxShadow":"0 0 0px rgba(255,0,0,.5)","margin":"10px auto","borderColor":"#ccc","backgroundColor":"rgba(255, 0, 0, 1)","color":"rgba(255, 255, 255, 1)","borderRadius":"8px","borderWidth":"0","width":"30%","fontSize":"14px","borderStyle":"solid","height":"44px"}'>确定</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <!-- 个人中心 -->
+    </div>
+</div>
+
+
+<style>
+    /* 移除或调整 Layui 相关样式 */
+    .right-container {
+        position: relative;
+    }
+
+    /* Element UI Upload 样式调整 (如果需要) */
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 80px; /* 保持和图片一致 */
+        height: 80px; /* 保持和图片一致 */
+        line-height: 80px;
+        text-align: center;
+    }
+    .avatar {
+        width: 80px; /* 保持和图片一致 */
+        height: 80px; /* 保持和图片一致 */
+        display: block;
+    }
+    /* 调整 Element UI 表单项间距 */
+    .el-form-item {
+        margin-bottom: 15px; /* 调整为你需要的间距 */
+    }
+    /* 调整 Element UI 输入框/选择框宽度 */
+    .right-container .el-input,
+    .right-container .el-select {
+        width: 100%; /* 或者你需要的固定宽度 */
+    }
+
+</style>
+<!-- vue -->
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入 axios 工具 -->
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<!-- 组件配置信息 -->
+<script src="../../js/config.js"></script>
+<!-- 扩展插件配置信息 -->
+<script src="../../modules/config.js"></script>
+<!-- 工具方法 -->
+<script src="../../js/utils.js"></script>
+<!-- 移除校验格式工具类 (如果 Element UI 验证足够) -->
+<!-- <script src="../../js/validate.js"></script> -->
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            //项目路径 - 使用 axios 实例的 baseURL
+            baseUrl : (window.baseUrl || '') + '/jiadianxiaoshoupingtai/',
+            // 上传文件请求头
+            uploadHeaders: { Token: localStorage.getItem('Token') },
+            //修改密码
+            changePassword:false,
+            // 修改密码表单模型
+            passwordForm: {
+                oldPassword:'',
+                newPassword:'',
+                confirmPassword:'',
+            },
+            detail: {
+                id: null, // 添加 id
+                username: '',
+                password: '', // 密码字段通常不在前端直接处理，除非是修改密码功能
+                yonghuName: '',
+                yonghuPhone: '',
+                yonghuIdNumber: '',
+                yonghuPhoto: '',
+                sexTypes: '',//数字
+                sexValue: '',//数字对应的值
+                yonghuEmail: '',
+                newMoney: '',
+                createTime: '',
+            },
+            sexTypesList: [],
+            centerMenu: centerMenu
+        },
+        // 移除 updated 钩子中的 layui.form.render
+        // updated: function() {
+        //     // layui.form.render(null, 'myForm');
+        // },
+        // 添加 mounted 钩子用于初始化
+        mounted() {
+            this.baseUrl = (window.baseUrl || '') + '/jiadianxiaoshoupingtai/',
+                this.getUserInfo(); // 获取用户信息
+            this.sexTypesSelect(); // 获取性别字典
+        },
+        methods: {
+            // 获取用户信息 - 使用 Axios
+            getUserInfo() {
+                let table = localStorage.getItem("userTable");
+                if(!table){
+                    this.$message.error('请先登录');
+                    setTimeout(() => {
+                        window.parent.location.href = '../login/login.html';
+                    }, 1500);
+                    return;
+                }
+                server.get(`${table}/session`).then(res => { // 使用 server.get
+                    if (res.code === 0) {
+                        this.detail = res.data;
+                        // 确保照片URL是完整的，如果不是，则拼接baseUrl
+                        if (this.detail.yonghuPhoto && !this.detail.yonghuPhoto.startsWith('http')) {
+                            // this.detail.yonghuPhoto = this.baseUrl + this.detail.yonghuPhoto; // 直接在模板中处理或在这里处理
+                        }
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }).catch(err => {
+                    this.$message.error("获取用户信息失败");
+                });
+            },
+            // 性别的查询 - 使用 Axios
+            sexTypesSelect() {
+                server.get("dictionary/page", { params: { // 使用 server.get
+                    page: 1,
+                    limit: 100,
+                    dicCode: 'sex_types' // 确认 dicCode 是否正确
+                }}).then(res => {
+                    if(res.code == 0){
+                       this.sexTypesList = res.data.list;
+                   } else {
+                       this.$message.error(res.msg);
+                   }
+                }).catch(err => {
+                    this.$message.error("获取性别选项失败");
+                });
+            },
+            // 头像上传成功回调
+            handleAvatarSuccess(res, file) {
+                console.log("上传成功:", res);
+                if (res.code === 0) {
+                    // 更新头像路径，注意后端返回的文件路径格式
+                    // 如果后端返回的是相对路径如 "upload/xxx.jpg"
+                    // this.detail.yonghuPhoto = 'upload/' + res.file;
+                    // 如果后端返回的是需要通过下载接口访问的文件名
+                    this.detail.yonghuPhoto = this.baseUrl + 'file/download?fileName=' + res.file;
+                    this.$message.success('上传成功');
+                } else {
+                    this.$message.error('上传失败: ' + res.msg);
+                }
+            },
+            // 头像上传前校验
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG && !isPNG) {
+                    this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return (isJPG || isPNG) && isLt2M;
+            },
+            // 更新用户信息 - 使用 Axios
+            updateUserInfo() {
+                // 可选：添加 Element UI 表单验证触发
+                // this.$refs['ruleForm'].validate((valid) => {
+                //     if (valid) {
+                        let table = localStorage.getItem("userTable");
+                        // 准备要提交的数据，移除不需要或不应由前端修改的字段
+                        const dataToUpdate = { ...this.detail };
+                        delete dataToUpdate.password; // 不应通过此接口更新密码
+                        delete dataToUpdate.createTime; // 创建时间通常由后端设置
+                        delete dataToUpdate.newMoney; // 余额不应直接修改
+                        delete dataToUpdate.username; // 用户名通常不允许修改
+
+                        // 处理头像路径，如果包含baseUrl，则提取相对路径或文件名
+                        if (dataToUpdate.yonghuPhoto && dataToUpdate.yonghuPhoto.startsWith(this.baseUrl)) {
+                            // 假设后端需要的是 'upload/filename.jpg' 或 'filename.jpg' 格式
+                            // 需要根据后端 file/upload 接口实际保存的路径格式调整
+                            // 示例：如果保存的是 upload/xxx.jpg
+                            // dataToUpdate.yonghuPhoto = dataToUpdate.yonghuPhoto.replace(this.baseUrl, '');
+                            // 示例：如果保存的是 xxx.jpg，且上传接口返回的就是文件名
+                            // 则不需要处理，因为 handleAvatarSuccess 已经设置了完整 URL，
+                            // 但提交时后端可能只需要文件名或相对路径，这里需要确认！
+                            // 假设后端需要 'upload/...' 格式
+                            let urlParts = dataToUpdate.yonghuPhoto.split('?fileName=');
+                            if (urlParts.length > 1) {
+                                // 假设后端保存的是 upload/ + 文件名
+                                dataToUpdate.yonghuPhoto = 'upload/' + urlParts[1];
+                            } else if (dataToUpdate.yonghuPhoto.includes('/upload/')) {
+                                // 如果已经是 upload/ 开头，可能不需要处理，或者取相对路径
+                                dataToUpdate.yonghuPhoto = dataToUpdate.yonghuPhoto.substring(dataToUpdate.yonghuPhoto.indexOf('/upload/') + 1);
+                            }
+                            // **重要**: 上面这部分逻辑需要根据后端实际情况调整
+
+                        }
+
+
+                        server.post(`${table}/update`, dataToUpdate).then(res => { // 使用 server.post
+                            if (res.code === 0) {
+                                this.$message.success('修改成功');
+                                // 可选：更新成功后重新获取用户信息或直接更新本地模型的部分字段
+                                // this.getUserInfo(); // 重新获取确保数据同步
+                                // 或者，如果后端返回了更新后的对象
+                                // this.detail = { ...this.detail, ...res.data };
+                            } else {
+                                this.$message.error(res.msg);
+                            }
+                        }).catch(err => {
+                            this.$message.error('请求失败');
+                        });
+                //     } else {
+                //         console.log('error submit!!');
+                //         return false;
+                //     }
+                // });
+            },
+            // 处理充值按钮点击
+            handleRecharge() {
+                // 这里可以使用 Element UI 的 Dialog 打开一个充值组件或页面
+                // 或者直接跳转到充值页面
+                // 示例：跳转到 recharge.html (假设它也在 pages 目录下)
+                window.location.href = '../recharge/recharge.html';
+                // 或者使用 Element UI Dialog (需要先创建 Dialog 组件)
+                // this.rechargeDialogVisible = true;
+                 this.$message.info('充值功能待实现'); // 临时提示
+            },
+            xiugaimima() {
+                this.changePassword = true;
+                // 清空密码表单
+                this.$nextTick(() => {
+                    if (this.$refs.passwordFormRef) {
+                        this.$refs.passwordFormRef.resetFields();
+                    }
+                    this.passwordForm = { oldPassword: '', newPassword: '', confirmPassword: '' };
+                });
+            },
+            back() {
+                this.changePassword = false;
+            },
+            // 确认修改密码 - 使用 Axios
+            queren() {
+                let _this = this;
+                if(!_this.passwordForm.oldPassword){
+                     _this.$message.error("旧密码不能为空");
+                    return;
+                }
+                 if(!_this.passwordForm.newPassword){
+                     _this.$message.error("新密码不能为空");
+                    return;
+                }
+                if (_this.passwordForm.confirmPassword !== _this.passwordForm.newPassword) {
+                    _this.$message.error("两次密码不一致");
+                    return;
+                }
+
+                let table = localStorage.getItem("userTable");
+                server.get(`${table}/updatePassword`, { // 使用 server.get 或 post，根据后端接口定义
+                    params: { // 如果是 GET 请求
+                        oldPassword: _this.passwordForm.oldPassword,
+                        newPassword: _this.passwordForm.newPassword
+                    }
+                    // data: { // 如果是 POST 请求
+                    //     oldPassword: _this.passwordForm.oldPassword,
+                    //     newPassword: _this.passwordForm.newPassword
+                    // }
+                }).then(res => {
+                    if (res.code === 0) {
+                        _this.$message.success("修改密码成功, 下次登录请使用新密码");
+                        _this.passwordForm = { oldPassword: '', newPassword: '', confirmPassword: '' }; // 清空表单
+                        _this.changePassword = false; // 返回信息展示界面
+                    } else {
+                         _this.$message.error(res.msg); // 显示后端返回的错误信息
+                    }
+                }).catch(err => {
+                    _this.$message.error("请求失败");
+                });
+            },
+            jump(url) {
+                jump(url);
+            },
+            logout() {
+                // 点击退出登录触发的方法
+                localStorage.removeItem('Token');
+                localStorage.removeItem('role');
+                localStorage.removeItem('sessionTable');
+                localStorage.removeItem('adminName');
+                localStorage.removeItem('userid');
+                localStorage.removeItem('userTable');
+                localStorage.removeItem('iframeUrl');
+                // 使用 Element UI 确认框增加用户体验
+                this.$confirm('确定要退出登录吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    window.parent.location.href = '../login/login.html';
+                }).catch(() => {
+                    // 用户点击了取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消退出'
+                    });
+                });
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

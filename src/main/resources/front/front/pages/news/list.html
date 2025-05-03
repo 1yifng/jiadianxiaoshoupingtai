@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>公告信息</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <script type="text/javascript" src="../../xznstatic/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+
+
+    ul.short_ls li a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    ul.short_ls li {
+        list-style: none;
+        display: inline-block;
+        letter-spacing: 1px;
+        font-size: 14px;
+    }
+
+
+
+    .event-right.wthree-event-right {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    .event-right.wthree-event-right {
+        width: 96%;
+    }
+
+    .event-right.wthree-event-right {
+        width: 85%;
+    }
+
+    .event-right.wthree-event-right {
+        width: 100%;
+    }
+
+    .tags1 h3{
+        font-size: 25px;
+        color: #212121;
+        position: relative;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.27);
+        font-weight: 500;
+    }
+
+    .tags1 {
+        margin-top: 30px;
+    }
+
+    .tags1 {
+        padding: 30px;
+        border: 1px solid rgba(56, 54, 54, 0.32);
+        background: #fff;
+    }
+
+    .tags1 ul {
+        padding: 5px 0 0 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    .tags ul li {
+        margin: 2px 0;
+        display: inline-block;
+    }
+
+    .tags ul li a {
+        padding: 7px 10px;
+        border: 1px solid rgba(153, 153, 153, 0.4);
+        color: #212121;
+        text-decoration: none;
+        margin: 0 5px 0 0em;
+        display: block;
+        font-size: 14px;
+    }
+
+    @media (max-width: 1080px) {
+    }
+
+    .event-right .search-input {
+        margin: 5px 0;
+        outline: none;
+        padding: 12px;
+        text-align: center;
+        color: #333;
+        border: 1px solid rgba(56, 54, 54, 0.32);
+        font-size: 16px;
+        width: 100%;
+        background: #fff;
+        letter-spacing: 1px;
+    }
+
+    input::-webkit-input-placeholder {
+        color: #333 ;
+    }</style>
+<body class='bodyClass'>
+<div id="app">
+<!--    </el-dialog>-->
+<section class="blog-one ">
+    <div class="container py-3">
+        <!-- left side -->
+        <div class="row">
+            <!-- 将原来的右侧边栏移到左侧 -->
+            <div class="col-lg-4 event-right wthree-event-right">
+                <ul class="short_ls" style="margin: 5px">
+                    <li style="font-size: 20px">
+                        <a href="../home/home.html">首页</a>
+                        <span>/</span>
+                    </li>
+                    <li>公告信息</li>
+                </ul>
+                <form>
+         
+                <input type="text" v-model="searchForm.newsName" placeholder="公告标题" autocomplete="off"
+                       class="search-input">     
+                                    <div style="display: flex;justify-content: space-evenly;align-items: center; margin-top: 1em;">
+                        <!-- 使用 el-button 并替换图标 -->
+                        <el-button type="primary" @click="pageList" icon="el-icon-search" style="width: 100px;">搜索</el-button>
+                    </div>
+                </form>
+                <div class="tags tags1">
+                    <h3>公告类型</h3>
+                    <ul>
+                        <!-- 添加 @click 事件 -->
+                        <li class="thisTableType-search" @click="searchForm.newsTypes = ''; pageList();">
+                            <a :class='searchForm.newsTypes=="" || searchForm.newsTypes==null?"thisTableType-search-hover":""'>全部</a>
+                        </li>
+                        <!-- 添加 @click 事件, 移除 index 属性 -->
+                        <li v-for="(item,index) in newsTypesList" :key="item.codeIndex" class="thisTableType-search" @click="searchForm.newsTypes = item.codeIndex; pageList();">
+                            <a :class='searchForm.newsTypes==item.codeIndex?"thisTableType-search-hover":""'>{{item.indexName}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 右侧内容 -->
+            <!-- 数据展示方式  开始 -->
+            <div class="col-lg-8" style="margin-top: 13px"> <!-- 使用 col-lg-8 替换固定宽度 -->
+                                        <div style="display:flex;flex-direction: column;">
+                 <div @click="jump('../news/detail.html?id='+item.id);" v-for="(item,index) in dataList" :key="index"
+                      class="list-item2" style="box-shadow:0 0 6px #fff;margin: 5px 0">
+                     <div class="animation-box" style="display:flex;" :style='{"padding":"10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"10px","borderColor":"var(--publicMainColor)","backgroundColor":"#fff","borderRadius":"4px","borderWidth":"4px","borderStyle":"solid"}'>
+                         <div>
+                             <img :style='{"boxShadow":"0 0 0px rgba(255,0,0,.8)","borderColor":"rgba(0,0,0,.3)","borderRadius":"50%","borderWidth":"0","width":"210px","borderStyle":"solid","height":"180px"}'
+                                  :src="baseUrl+item.newsPhoto">
+                         </div>
+                         <div style="padding: 0 5px">
+                             <div v-if="true"
+                                  :style='{"isshow":true,"padding":"0","margin":"5px 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"rgba(0, 0, 0, 1)","borderRadius":"0","textAlign":"left","width":"100%","fontSize":"18px"}'
+                             >{{item.newsName}}
+                             </div>
+                             <div style="overflow: hidden;display: -webkit-box;-webkit-line-clamp: 5; -webkit-box-orient: vertical;"  v-if="item.newsContent"
+                                  :style='{"padding":"0","margin":"10px 0 0 0","backgroundColor":"rgba(0,0,0,0)","color":"rgba(127, 127, 127, 1)","borderRadius":"0","textAlign":"left","width":"100%","fontSize":"16px"}'
+                                  v-html="myFilters(item.newsContent)">
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+            </div>                
+            <div class="pager" id="pager" :style="{textAlign:'center'}">
+                <el-pagination
+                    @size-change="sizeChangeHandle"
+                    @current-change="currentChangeHandle"
+                    :current-page="searchForm.page"
+                    :page-sizes="[10]"
+                    :page-size="searchForm.limit"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+                </el-pagination>
+            </div>
+
+        </div>
+    </div>
+</div>
+</section>
+</div>
+
+
+<!-- 基础库 -->
+<script src="../../js/jquery.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/axios.min.js"></script>
+
+<!-- UI框架相关 -->
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- Element UI -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+
+<!-- 工具库 -->
+<script src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+
+<!-- 项目配置和工具 -->
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+<script src="../../js/request.js"></script>
+
+
+<script type="text/javascript">
+    Vue.prototype.myFilters = function (msg) {
+        if(msg==null || msg==""){
+            return "";
+        }else if (msg.length>20){
+            msg.replace(/\n/g, "<br>");
+            return msg.substring(0,30)+"......";
+        }else{
+            return msg.replace(/\n/g, "<br>");
+        }
+    };
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            userId: localStorage.getItem("userid"),//当前登录人的id
+            sessionTable: localStorage.getItem("userTable"),//登录账户所在表名
+            role: localStorage.getItem("role"),//权限
+            user:{},//当前登录用户信息
+            //小菜单
+            centerMenu: centerMenu,
+            //项目路径
+            baseUrl:"",
+            //弹出内容模态框
+            showContentModal:false,
+            showContent:"",
+            newsTypesList: [],
+            //查询条件
+            searchForm: {
+                page: 1
+                ,limit:10
+                ,sort: "id"//字段
+                ,order: "desc"//asc desc
+                ,newsName: ""
+                ,newsTypes: ""
+                ,newsPhoto: ""
+                ,newsContent: ""
+            },
+            total: 0, // 添加total属性用于分页
+            dataList: [],
+        },
+        filters: {
+            subString: function(val) {
+                if (val) {
+                    val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');
+                    if (val.length > 60) {
+                        val = val.substring(0, 60);
+                        val+='...';
+                    }
+                    return val;
+                }
+                return '';
+            }
+        },
+        computed: {
+        },
+        methods: {
+            jump(url) {
+                jump(url);
+            },
+            showContentFunction(content) {
+                this.showContentModal=true;
+                this.showContent=content.replaceAll("src=\"upload/","src=\""+this.baseUrl+"upload/");
+            },
+            // 添加pageList方法
+            pageList() {
+                // 获取列表数据
+                server.get('news/list', {
+                    params: this.searchForm
+                }).then(res => {
+                    if(res.code === 0) {
+                        this.dataList = res.data.list;
+                        this.total = res.data.total;
+                    } else {
+                        this.$message.error(res.msg || '获取数据失败');
+                    }
+                }).catch(err => {
+                    console.error('请求出错:', err);
+                    this.$message.error('网络错误，请检查网络连接');
+                });
+            },
+
+            // 添加 Element UI 分页方法
+            sizeChangeHandle(val) {
+                this.searchForm.limit = val;
+                this.searchForm.page = 1; // 切换每页数量时，重置到第一页
+                this.pageList();
+            },
+            currentChangeHandle(val) {
+                this.searchForm.page = val;
+                this.pageList();
+            }
+        },
+        mounted() {
+            // 设置 localStorage 中的跳转地址
+            localStorage.setItem("goUtl","./pages/news/list.html");
+            
+            // 设置正确的baseUrl
+            this.baseUrl = (window.baseUrl || '') + '/jiadianxiaoshoupingtai/';
+
+            // 获取用户信息
+            let table = localStorage.getItem("userTable");
+            if(table) {
+                server.get(table+"/session").then(res => {
+                    if(res.code === 0) {
+                        this.user = res.data;
+                    }
+                });
+            }
+
+            
+            // 获取公告类型列表
+            server.get("dictionary/page", {
+                params: {
+                    page: 1,
+                    limit: 100,
+                    sort: '',
+                    order: '',
+                    dicCode: 'news_types'
+                }
+            }).then(res => {
+                if(res.code === 0){
+                    this.newsTypesList = res.data.list;
+                }
+            });
+            
+            // 初始加载数据
+            this.pageList();
+        }
+    });
+
+    // window.xznSlide = function () {
+    //     jQuery(".banner").slide({mainCell: ".bd ul", autoPlay: true, interTime: 5000});
+    //     jQuery("#ifocus").slide({
+    //         titCell: "#ifocus_btn li",
+    //         mainCell: "#ifocus_piclist ul",
+    //         effect: "leftLoop",
+    //         delayTime: 200,
+    //         autoPlay: true,
+    //         triggerTime: 0
+    //     });
+    //     jQuery("#ifocus").slide({titCell: "#ifocus_btn li", mainCell: "#ifocus_tx ul", delayTime: 0, autoPlay: true});
+    //     jQuery(".product_list").slide({
+    //         mainCell: ".bd ul",
+    //         autoPage: true,
+    //         effect: "leftLoop",
+    //         autoPlay: true,
+    //         vis: 5,
+    //         trigger: "click",
+    //         interTime: 4000
+    //     });
+    // };
+</script>
+</body>
+</html>

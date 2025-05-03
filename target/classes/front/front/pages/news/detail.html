@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>公告信息详情页</title>
+    <!-- 引入Layui CSS样式文件，Layui是一套简洁、直观的前端UI框架，用于快速构建页面布局和交互元素 -->
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <!-- 引入自定义的样式文件style.css，用于定义页面特定的样式规则 -->
+    <link rel="stylesheet" href="../../css/style.css"/>
+    <!-- 引入主题样式文件theme.css，主要用于设置页面的主色调等主题相关样式 -->
+    <link rel="stylesheet" href="../../css/theme.css"/>
+    <!-- 引入通用的CSS文件common.css，存放一些通用的样式，如字体、颜色等基础样式设置 -->
+    <link rel="stylesheet" href="../../css/common.css"/>
+    <!-- 引入Bootstrap的CSS样式文件，利用其响应式布局和组件样式增强页面的适应性和美观度 -->
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css">
+    <style>
+        /* 定义Layui轮播图指示器中每个点的样式 */
+        #swiper .layui-carousel-ind li {
+            width: 20px;
+            height: 10px;
+            border-width: 0;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, .3);
+            border-radius: 6px;
+            background-color: #f7f7f7;
+            box-shadow: 0 0 6px rgba(255, 0, 0, .8);
+        }
+        /* 定义公告标题容器的样式，包括居中对齐、盒子模型属性、布局方式等 */
+        .index-title {
+            text-align: center;
+            box-sizing: border-box;
+            width: 980px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 10px;
+            box-shadow: 0 0 2px rgba(160, 67, 26, 1);
+            margin: 10px auto;
+            border-color: rgba(0, 0, 0, .3);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border-width: 0;
+            font-size: 20px;
+            border-style: solid;
+            height: auto;
+        }
+        /* 定义公告内容容器的样式，设置上下外边距并使其水平居中 */
+        .news-container .content {
+            margin: 30px auto;
+        }
+        /* 定义公告底部按钮容器的样式，包括布局方式、尺寸、对齐方式等 */
+        .news-container .btn-container {
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+            flex-wrap: wrap;
+            width: 980px !important;
+            margin: 0 auto !important;
+            justify-content: space-between !important;
+            padding: 0 10px;
+            box-shadow: 0 0 0px rgba(255, 0, 0, .8);
+            margin: 10px 0 10px 0;
+            border-color: rgba(0, 0, 0, .3);
+            border-radius: 4px;
+            height: 64px;
+        }
+        /* 定义按钮容器中按钮内图标的样式，设置右边距 */
+        .news-container .btn-container button i {
+            margin-right: 4px;
+        }
+        /* 定义按钮容器中标题的样式，设置字体大小和颜色 */
+        .news-container .btn-container .title {
+            font-size: 18px;
+            color: #999;
+        }
+        /* 定义按钮容器中按钮的样式，设置背景色、边框、文字颜色等 */
+        .news-container .btn-container button {
+            padding: 0 15px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0);
+            margin: 0 0 0 10px;
+            border-color: rgba(135, 206, 250, 1);
+            color: #fff;
+            border-radius: 4px;
+            border-width: 0;
+            width: auto;
+            font-size: 14px;
+            border-style: solid;
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+    <!-- 公告标题部分，包含英文和中文标题，通过Vue的动态样式绑定设置样式 -->
+    <div class="index-title sub_backgroundColor">
+        <span>NEWS / INFORMATION</span>
+        <span>公告信息</span>
+    </div>
+
+    <!-- 公告内容主体部分 -->
+    <div class="news-container">
+        <!-- 公告标题，通过Vue插值表达式显示公告名称 -->
+        <h1 class="title">{{detail.newsName}}</h1>
+        <!-- 公告发布时间，通过Vue插值表达式显示插入时间 -->
+        <div class="auth-container">
+            时间：{{detail.insertTime}}
+        </div>
+        <!-- 公告图片，通过Vue动态绑定src属性显示图片，设置图片宽度为100%并水平居中 -->
+        <div style="width: 980px;margin: 0 auto">
+            <img width="100%" :src="baseUrl+detail.newsPhoto">
+        </div>
+        <!-- 公告内容，通过Vue的v-html指令渲染HTML内容，并使用myFilters方法处理换行符 -->
+        <div class="content" style="word-break: break-all;" v-html="myFilters(detail.newsContent)">
+        </div>
+        <!-- 公告底部按钮容器，包含文章标题显示和返回列表按钮 -->
+        <div class="btn-container main_backgroundColor">
+            <!-- 显示当前文章标题，设置字体样式 -->
+            <div class="title">
+                本篇文章：{{detail.newsName}}
+            </div>
+            <!-- 返回列表按钮，点击触发back函数（需定义），设置按钮样式和图标 -->
+            <button onclick="back()" type="button" class="layui-btn layui-btn-lg btn-theme">
+                <i v-if="true" class="layui-icon">&#xe65c;</i> 返回列表
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入Element UI组件库，用于扩展页面的交互组件功能 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入Element UI的样式文件，为Element UI组件提供样式支持 -->
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<!-- 引入组件配置信息文件，可能包含一些组件的初始化配置等信息 -->
+<script src="../../js/config.js"></script>
+<!-- 引入扩展插件配置信息文件，用于配置扩展插件的相关参数 -->
+<script src="../../modules/config.js"></script>
+<!-- 引入工具方法文件，可能包含一些通用的工具函数，如数据处理、页面操作等 -->
+<script src="../../js/utils.js"></script>
+
+<script>
+    // 定义Vue原型方法myFilters，用于处理文本内容，将换行符替换为<br>标签
+    Vue.prototype.myFilters = function (msg) {
+        if (msg != null) {
+            return msg.replace(/\n/g, "<br>");
+        } else {
+            return "";
+        }
+    };
+
+    // 创建Vue实例，绑定到id为app的DOM元素
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            // 当前登录用户信息，初始化为空对象
+            user: {},
+            // 轮播图数据，用于存储当前表的图片信息，初始化为空数组
+            swiperList: [],
+            // 公告详情数据，包含公告的各种属性，初始id为0
+            detail: {
+                id: 0
+            },
+            // 商品标题，初始化为空字符串
+            title: '',
+            // 评分，初始化为0
+            totalScore: 0,
+            // 基础路径，用于构建图片等资源的完整路径，初始化为空字符串
+            baseUrl: "",
+            // 收藏标识，0表示未收藏，1表示已收藏，初始化为0
+            storeupFlag: 0,
+            // 系统推荐的公告列表，初始化为空数组
+            newsRecommendList: [],
+            // 当前详情页对应的表名，设置为news
+            detailTable: 'news'
+        },
+        methods: {
+            // 页面跳转方法，调用外部定义的jump函数进行页面跳转
+            jump(url) {
+                jump(url)
+            }
+        }
+    });
+
+    layui.use(['layer', 'form', 'element', 'carousel', 'http', 'jquery', 'laypage', 'util'], function () {
+        var layer = layui.layer;
+        var util = layui.util;
+        var element = layui.element;
+        var form = layui.form;
+        var carousel = layui.carousel;
+        var http = layui.http;
+        var jquery = layui.jquery;
+        var laypage = layui.laypage;
+        // 设置Vue实例的baseUrl为Layui http模块的baseurl
+        vue.baseUrl = http.baseurl;
+
+        // 将当前页面的跳转地址存储到localStorage中，用于后续可能的页面导航
+        localStorage.setItem("goUtl", "./pages/news/detail.html?id=" + http.getParam('id'));
+
+        // 定义每页显示数量，这里设置为10
+        var limit = 10;
+
+        // 获取用户信息，如果存在userTable，则通过Layui的http请求获取用户会话数据
+        let table = localStorage.getItem("userTable");
+        if (table) {
+            http.request(table + "/session", 'get', {}, function (data) {
+                vue.user = data.data;
+            });
+        }
+
+        // 获取当前公告的id，从URL参数中获取
+        var id = http.getParam('id');
+        // 将获取到的id赋值给Vue实例中公告详情的id属性
+        vue.detail.id = id;
+        // 通过Layui的http请求获取公告详情数据
+        http.request('news/detail/' + id, 'get', {}, function (res) {
+            if (res.code === 0) {
+                // 如果请求成功，将返回的数据赋值给Vue实例的公告详情对象，并处理公告内容中的图片路径
+                vue.detail = res.data;
+                vue.title = vue.detail.newsName;
+                vue.detail.newsContent = vue.detail.newsContent.replaceAll("src=\"upload/", "src=\"" + vue.baseUrl + "upload/").replaceAll(/<img/g, '<img style="width: 100%;"');
+            } else {
+                // 如果请求失败，使用Layui的layer模块弹出错误提示
+                layer.msg('获取公告详情失败：' + res.msg, {time: 5000, icon: 5});
+            }
+        }).error(function (err) {
+            // 如果网络请求出错，使用Layui的layer模块弹出网络错误提示
+            layer.msg('网络请求失败，请检查网络连接', {time: 5000, icon: 5});
+        });
+    });
+</script>
+</body>
+
+</html>

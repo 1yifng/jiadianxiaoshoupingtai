@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>商品订单</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <script type="text/javascript" src="../../xznstatic/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    /* 整体页面内容的容器，设置宽度并使其水平居中，添加上下外边距，并采用弹性布局 */
+    .center-container {
+        width: 1200px; /* 设置容器宽度为 1200 像素 */
+        margin: 0 auto; /* 使容器在水平方向上居中 */
+        margin-top: 20px; /* 设置容器顶部外边距为 20 像素 */
+        display: flex; /* 将容器设置为弹性布局，便于子元素排列 */
+        margin-bottom: 20px; /* 设置容器底部外边距为 20 像素 */
+    }
+
+    /* 左侧菜单的容器，设置宽度、背景颜色和顶部内边距 */
+    .proleft {
+        width: 280px; /* 设置左侧菜单容器宽度为 280 像素 */
+        background: #fff; /* 设置菜单容器背景颜色为白色 */
+        padding-top: 30px; /* 设置菜单容器顶部内边距为 30 像素 */
+    }
+
+    /* 左侧菜单标题的背景区域样式，设置背景颜色、宽度和内边距 */
+    .proleft .lefttit-bg {
+        background: var(--publicMainColor); /* 设置标题背景颜色为自定义的主色调变量 */
+        width: 90%; /* 设置标题背景宽度为菜单容器宽度的 90% */
+        padding-left: 20px; /* 设置标题背景左侧内边距为 20 像素 */
+        padding-bottom: 10px; /* 设置标题背景底部内边距为 10 像素 */
+    }
+
+    /* 左侧菜单标题的大标题样式，设置字体大小、粗细和颜色 */
+    .proleft .p2 {
+        font-size: 26px; /* 设置大标题字体大小为 26 像素 */
+        font-weight: bold; /* 设置大标题字体加粗 */
+        color: #fff; /* 设置大标题字体颜色为白色 */
+    }
+
+    /* 左侧菜单标题的小标题样式，设置字体大小、粗细和颜色 */
+    .proleft .p3 {
+        font-size: 18px; /* 设置小标题字体大小为 18 像素 */
+        font-weight: bold; /* 设置小标题字体加粗 */
+        color: #fff; /* 设置小标题字体颜色为白色 */
+    }
+
+    /* 左侧菜单列表的样式，设置内边距 */
+    .ul1 {
+        padding-left: 27px; /* 设置菜单列表左侧内边距为 27 像素 */
+        padding-top: 20px; /* 设置菜单列表顶部内边距为 20 像素 */
+        padding-bottom: 20px; /* 设置菜单列表底部内边距为 20 像素 */
+    }
+
+    /* 菜单项的基础样式，设置定位方式 */
+    .ul1 li {
+        position: relative; /* 将菜单项设置为相对定位，方便子元素绝对定位 */
+    }
+
+    /* 菜单项的文本样式，设置字体大小、颜色、内边距、显示方式和过渡效果 */
+    .ul1 li {
+        font-size: 15px; /* 设置菜单项字体大小为 15 像素 */
+        color: #000; /* 设置菜单项字体颜色为黑色 */
+        padding: 10px 0px 10px 35px; /* 设置菜单项上下内边距为 10 像素，左侧内边距为 35 像素 */
+        display: block; /* 将菜单项设置为块级元素，使其独占一行 */
+        transition: all 0.6s; /* 为菜单项的所有样式变化添加 0.6 秒的过渡效果 */
+    }
+
+    /* 菜单项前面小横线的样式，设置显示方式、定位、尺寸、背景颜色和过渡效果 */
+    .ul1 li b {
+        display: block; /* 将小横线设置为块级元素 */
+        position: absolute; /* 将小横线设置为绝对定位，相对于菜单项定位 */
+        left: 0; /* 将小横线左侧边缘与菜单项左侧边缘对齐 */
+        width: 10px; /* 设置小横线宽度为 10 像素 */
+        height: 1px; /* 设置小横线高度为 1 像素 */
+        background: #aaaaaa; /* 设置小横线背景颜色为灰色 */
+        top: 50%; /* 将小横线顶部边缘与菜单项垂直中心对齐 */
+        transform: translateY(-50%); /* 将小横线向上平移自身高度的一半，使其完全垂直居中 */
+        transition: all 0.6s; /* 为小横线的所有样式变化添加 0.6 秒的过渡效果 */
+    }
+
+    /* 菜单项处于选中状态（.on 类）或鼠标悬停时，小横线的样式变化 */
+    .ul1 li.on b, .ul1 li:hover b {
+        width: 31px; /* 将小横线宽度设置为 31 像素 */
+        background: var(--publicMainColor); /* 将小横线背景颜色设置为自定义的主色调变量 */
+        margin-right: 20px; /* 设置小横线右侧外边距为 20 像素，对绝对定位元素实际效果有限，可考虑移除 */
+    }
+
+</style>
+<body class='bodyClass'>
+<div id="app">
+<!--    <el-dialog title="弹出内容" :visible.sync="showContentModal" :modal-append-to-body="false">-->
+<!--        <div class="content" style="word-break: break-all;" v-html="showContent">-->
+<!--        </div>-->
+<!--        <div slot="footer" class="dialog-footer">-->
+<!--            <el-button @click="showContentModal = false">关 闭</el-button>-->
+<!--        </div>-->
+<!--    </el-dialog>-->
+
+    <!-- 用于显示评论输入的弹出对话框：管理员发货后，用户在订单管理处点击收货后会出现评价按钮，点击评价按钮会弹出对话框 -->
+    <!-- title: 对话框的标题，这里显示为“评论” -->
+    <!-- :visible.sync: 用于双向绑定对话框的显示与隐藏状态 -->
+    <!-- :modal-append-to-body: 控制模态框是否追加到 body 元素中，这里设置为 false -->
+    <el-dialog title="评论" :visible.sync="jiadianCommentbackModal" :modal-append-to-body="false">
+        <!-- 表单容器 -->
+        <el-form>
+            <!-- 表单项目，标签为“评论信息” -->
+            <el-form-item label="评论信息">
+                <!-- 文本输入框，用于输入评论内容 -->
+                <!-- type: 输入框的类型，这里设置为 textarea 表示多行文本输入 -->
+                <!-- v-model: 双向数据绑定，将输入的内容绑定到 jiadianCommentbackContent 变量上 -->
+                <el-input type="textarea" v-model="jiadianCommentbackContent"></el-input>
+            </el-form-item>
+        </el-form>
+        <!-- 对话框底部插槽，用于放置操作按钮 -->
+        <div slot="footer" class="dialog-footer">
+            <!-- 取消按钮，点击后将 jiadianCommentbackModal 设置为 false，关闭对话框 -->
+            <el-button @click="jiadianCommentbackModal = false">取 消</el-button>
+            <!-- 确定按钮，点击后调用 submitJiadianCommentback 方法 -->
+            <el-button type="primary" @click="submitJiadianCommentback()">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 页面主体的容器，将内容水平居中 -->
+<div class="center-container">
+    <!-- 左侧个人中心菜单区域 -->
+    <!-- class: 设置样式类，fl 表示浮动左对齐，proleft 自定义样式类 -->
+    <!-- style: 设置样式，宽度为 20% -->
+ <div class="proleft fl" style="width: 20%;">
+     <!-- 菜单标题区域 -->
+     <div class="lefttit">
+         <!-- 标题背景区域 -->
+         <div class="lefttit-bg">
+             <!-- 小标题，显示“USER / CENTER” -->
+             <p class="p2">USER / CENTER</p>
+             <!-- 大标题，显示“商品订单” -->
+             <p class="p3">商品订单</p>
+         </div>
+     </div>
+     <!-- 菜单列表 -->
+     <ul class="ul1">
+         <!-- 使用 v-for 指令循环渲染菜单项 -->
+         <!-- :key: 为每个菜单项设置唯一的键，用于 Vue 跟踪元素 -->
+         <!-- :class: 根据菜单项的 url 属性是否等于 '../jiadianOrder/list.html' 来动态添加 'on' 类 -->
+         <!-- @click: 点击事件监听器，点击后调用 jump 方法并传入菜单项的 url -->
+         <li v-for="(item,index) in centerMenu" v-bind:key="index" :class="item.url=='../jiadianOrder/list.html'?'on':''" @click="jump(item.url)">
+             <!-- 菜单图标占位 -->
+             <b></b>
+             <!-- 菜单项名称 -->
+             {{item.name}}
+         </li>
+     </ul>
+ </div>
+    <!-- 右侧内容区域 -->
+    <!-- class: 设置样式类，sub_borderColor 自定义样式类 -->
+    <!-- :style: 动态设置样式，包括内边距、阴影、背景颜色、边框等 -->
+        <div class="right-container sub_borderColor" :style='{"padding":"20px","boxShadow":"0px rgba(255,0,0,.8)","margin":"0","backgroundColor":"#fff","borderRadius":"0","borderWidth":"1px","borderStyle":"solid","width":"80%"}'>
+            <!-- 搜索条件区域，使用 flex 布局 -->
+            <div style="display: flex;height: 60px;align-items: center;margin-left: 15px;">
+                <!-- 嵌套的搜索条件区域，使用 flex 布局 -->
+                <div style="display: flex;height: 60px;align-items: center;margin-left: 15px;">
+                    <!-- 全部订单类型搜索按钮 -->
+                    <!-- @click: 点击事件监听器，点击后调用 handleTypeSearch 方法并传入空字符串 -->
+                    <!-- :style: 根据 searchForm.jiadianOrderTypes 的值来动态设置样式 -->
+                    <div class="thisTableType-search" style="margin-left: 15px;"
+                         @click="handleTypeSearch('')"
+                    :style='searchForm.jiadianOrderTypes=="" || searchForm.jiadianOrderTypes==null?{"color":"red","borderBottom":"1px solid red"}:{"color":"#000"}'>
+                    全部
+                </div>
+<!--                    其他订单类型的显示是通过字典表实现：在 mounted() 生命周期钩子中，调用了 this.fetchOrderTypes() 方法，它会请求后端接口获取订单类型列表-->
+<!--                    然后将字典表中 jiadian_order_types 分类下的所有订单类型存入jiadianOrderTypesList中-->
+                    <!-- 使用 v-for 指令循环jiadianOrderTypesList渲染订单类型按钮 -->
+                    <!-- :index: 绑定菜单项的 codeIndex 属性 -->
+                    <!-- :class: 设置样式类，thisTableType-search 自定义样式类 -->
+                    <!-- @click: 点击事件监听器，点击后调用 handleTypeSearch 方法并传入菜单项的 codeIndex -->
+                    <!-- :style: 根据 searchForm.jiadianOrderTypes 的值来动态设置样式 -->
+                    <!-- item.indexName：显示出来的文字-->
+                <div style="margin-left: 15px;"
+                     v-for="item in jiadianOrderTypesList"
+                     :index="item.codeIndex"
+                     class="thisTableType-search"
+                     @click="handleTypeSearch(item.codeIndex)"
+                :style='searchForm.jiadianOrderTypes==item.codeIndex?{"color":"red","borderBottom":"1px solid red"}:{"color":"#000"}'>
+                {{item.indexName}}
+            </div>
+                </div>
+            </div>
+            <!-- 订单列表表头 -->
+            <div style="width: 90%;height: 40px;margin: 0 auto;display: flex;background-color: #f3f3f3;line-height: 40px;;text-align: center">
+                <!-- 订单详情列 -->
+                <div style="width: 33%">
+                    订单详情
+                </div>
+                <!-- 地址/收货人列 -->
+                <div  style="width: 25%">
+                    地址/收货人
+                </div>
+                <!-- 金额列 -->
+                <div style="width: 19%">
+                    金额
+                </div>
+                <!-- 状态列 -->
+                <div style="width: 6%">
+                    状态
+                </div>
+                <!-- 操作列 -->
+                <div style="width: 16%">
+                    操作
+                </div>
+            </div>
+            <!-- 使用 v-for 指令循环渲染订单列表项 -->
+            <!-- :key: 为每个订单项设置唯一的键，用于 Vue 跟踪元素 -->
+            <div style="width: 90%;margin: 0 auto;border: 1px solid #f3f3f3;margin-top: 15px;"
+                 v-for="(item,index) in dataList" v-bind:key="index">
+                <!-- 订单头部信息区域，使用 flex 布局 -->
+                <div
+                        style="height: 40px;background-color: #f3f3f3;display: flex;    align-items: center;">
+                    <!-- 订单插入时间 -->
+                    <div style="margin-left: 15px;">
+                        {{item.insertTime}}
+                    </div>
+                    <!-- 订单号 -->
+                    <div style="margin-left: 50px;">
+                        订单号:{{item.jiadianOrderUuidNumber}}
+                    </div>
+                    <!-- 快递信息，仅在订单类型不为 101 和 102 且快递名称不为空时显示 -->
+                    <div style="margin-left: 50px;" v-if="item.jiadianOrderTypes != 101 && item.jiadianOrderTypes != 102 && item.jiadianOrderCourierName != null">
+                        {{item.jiadianOrderCourierName}}：{{item.jiadianOrderCourierNumber}}
+                    </div>
+                    <!-- <div style="margin-right: 15px;">
+                        用户姓名:{{item.yonghuName}}
+                    </div> -->
+                </div>
+                <!-- 订单详细信息区域，使用 flex 布局 -->
+                <div style="display: flex;">
+                    <!-- 订单商品信息区域，占 60% 宽度，使用 flex 布局 -->
+                    <div style="width: 60%;display: flex;">
+                        <!-- 商品图片和名称信息区域，使用 flex 布局 -->
+                        <div style="display: flex;">
+                            <!-- 商品图片 -->
+                            <!-- :src: 动态绑定图片的 src 属性，拼接 baseUrl 和商品图片路径 -->
+                            <img :src="baseUrl+item.jiadianPhoto"
+                                 style="width: 100px;height: 100px;object-fit: cover;margin: 15px;">
+                            <!-- 商品名称和属性信息区域 -->
+                            <div style="margin: 15px;">
+                                <!-- 商品名称 -->
+                                <div style="font-size: 14px;">
+                                    {{item.jiadianName}}
+                                </div>
+                                <!-- 商品属性 -->
+                                <div style="font-size: 12px;color: #666;">
+                                    {{item.jiadianValue}}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 购买数量，仅在有购买数量时显示 -->
+                                <div style="margin: 15px;" v-if="item.buyNumber">
+                                    x{{item.buyNumber}}
+                                </div>
+                        <!-- 收货地址信息，设置宽度和溢出隐藏 -->
+                               <div style="margin: 20px;width: 80px;height: 100px;overflow: hidden">
+                                   {{item.addressDizhi}}
+                               </div>
+                    </div>
+                    <!-- 收货人信息区域，占 10% 宽度 -->
+                    <div style="width: 10%;margin: 15px;">
+                        <!-- 收货人姓名 -->
+                            {{item.addressName}}
+                        <!-- 收货人电话 -->
+                            <div>
+                                {{item.addressPhone}}
+                            </div>
+                    </div>
+                    <!-- 订单金额信息区域，占 10% 宽度 -->
+                    <div style="width: 10%;margin: 15px;">
+                        <!-- 订单实际支付金额 -->
+                        {{item.jiadianOrderTruePrice}}
+                        <!-- 订单支付方式 -->
+<!--                        <div>{{item.jiadianOrderPaymentValue}}</div>-->
+                    </div>
+                    <div style="width: 10%;margin: 15px;">
+                        <!-- 订单状态 -->
+                        {{item.jiadianOrderValue}}
+                    </div>
+                    <div style="width: 10%;margin: 15px;">
+                        <!-- 退款按钮，仅在订单类型为 101 时显示 -->
+                        <!-- @click: 点击事件监听器，点击后调用 refund 方法并传入订单 id -->
+                        <el-button v-if="item.jiadianOrderTypes==101" @click="refund(item.id)" type="warning" size="small" round>
+                            <i class="el-icon-refresh-left"></i> 退款
+                        </el-button>
+                        <!-- 评价按钮，仅在订单类型为 104 时显示 -->
+                        <!-- @click: 点击事件监听器，点击后调用 commentback 方法并传入订单 id -->
+                        <el-button v-if="item.jiadianOrderTypes==104" @click="commentback(item.id)" type="primary" size="small" round>
+                            <i class="el-icon-edit"></i> 评价
+                        </el-button>
+                        <!-- 收货按钮，仅在订单类型为 103 时显示 -->
+                        <!-- @click: 点击事件监听器，点击后调用 receiving 方法并传入订单 id -->
+                        <el-button v-if="item.jiadianOrderTypes==103" @click="receiving(item.id)" type="warning" size="small" round>
+                            <i class="el-icon-check"></i> 收货
+                        </el-button>
+                        <!--                        <button v-if="item.jiadianOrderTypes==1 && false" @click="wuyong(item.id)" type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">-->
+<!--                            无用按钮-->
+<!--                        </button>-->
+                    </div>
+                </div>
+            </div>
+            <!-- 分页器区域，设置文本居中 -->
+            <div class="pager" id="pager" :style="{textAlign:'center'}"></div>
+        </div>
+    </div></div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../../xznstatic/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="../../layui/layui.js"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入 axios 工具 -->
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<!-- 引入element样式 -->
+<link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+
+<script type="text/javascript">
+    // 定义 Vue 原型方法 myFilters，用于处理文本内容
+    Vue.prototype.myFilters = function (msg) {
+        // 如果消息为空或空字符串，返回空字符串
+        if (msg == null || msg == "") {
+            return "";
+        } else if (msg.length > 20) {
+            // 将字符串中的换行符替换为 HTML 换行标签
+            msg = msg.replace(/\n/g, "<br>");
+            // 截取前 30 个字符并添加省略号
+            return msg.substring(0, 30) + "......";
+        } else {
+            // 将字符串中的换行符替换为 HTML 换行标签并返回
+            return msg.replace(/\n/g, "<br>");
+        }
+    };
+
+    // 创建 Vue 实例
+    var vue = new Vue({
+        // 绑定到 HTML 中 id 为 app 的元素
+        el: '#app',
+        // 数据对象，包含了组件的各种数据
+        data: {
+            userId: localStorage.getItem("userid"), // 当前登录人的 id，从本地存储中获取
+            sessionTable: localStorage.getItem("userTable"), // 登录账户所在表名，从本地存储中获取
+            role: localStorage.getItem("role"), // 权限，从本地存储中获取
+            user: {}, // 当前登录用户信息的空对象
+            // 小菜单数据，这里假设 centerMenu 是一个外部定义的数组
+            centerMenu: centerMenu,
+            // 项目路径，从全局变量 window.baseUrl 或空字符串拼接
+            baseUrl: (window.baseUrl || '') + '/jiadianxiaoshoupingtai/',
+            // 弹出内容模态框相关数据
+            showContentModal: false, // 控制模态框是否显示
+            showContent: "", // 模态框中显示的内容
+            jiadianOrderTypesList: [], // 存储订单类型列表
+            jiadianOrderPaymentTypesList: [], // 存储订单支付类型列表（似乎未使用）
+
+            // 订单评论模态框相关数据
+            jiadianCommentbackContent: null, // 评价内容
+            jiadianCommentbackId: null, // 操作数据的 id
+            jiadianCommentbackModal: false, // 控制评论模态框是否显示
+            // jiadianCommentbackPingfenNumber:0, // 评分（注释掉，未使用）
+
+            // 查询条件数据
+            searchForm: {
+                page: 1, // 当前页码
+                limit: 10, // 每页显示数量
+                sort: "id", // 排序字段
+                order: "desc", // 排序方式（升序或降序）
+                yonghuId: localStorage.getItem('userid'), // 只能查询自己的订单，从本地存储获取用户 id
+                jiadianOrderUuidNumber: "", // 订单唯一编号
+                jiadianOrderCourierName: "", // 快递员姓名
+                jiadianOrderCourierNumber: "", // 快递单号
+                jiadianOrderTypes: "", // 订单类型
+                jiadianOrderPaymentTypes: "" // 订单支付类型（似乎未使用）
+            },
+
+            dataList: [], // 存储订单数据列表
+        },
+        // 过滤器，用于处理文本内容
+        filters: {
+            subString: function (val) {
+                // 如果值存在
+                if (val) {
+                    // 移除所有 HTML 标签和替换 undefined 字符串
+                    val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');
+                    // 如果值的长度大于 60
+                    if (val.length > 60) {
+                        // 截取前 60 个字符并添加省略号
+                        val = val.substring(0, 60);
+                        val += '...';
+                    }
+                    // 返回处理后的值
+                    return val;
+                }
+                // 如果值不存在，返回空字符串
+                return '';
+            }
+        },
+        // 计算属性（目前为空）
+        computed: {
+        },
+        // 生命周期钩子函数，在组件挂载完成后执行
+        mounted() {
+            // 设置 localStorage 中的跳转地址
+            localStorage.setItem("goUtl", "./pages/jiadianOrder/list.html");
+            // 获取用户信息
+            this.getUserInfo();
+            // 获取订单类型
+            this.fetchOrderTypes();
+            // 获取订单列表数据
+            this.fetchDataList();
+        },
+        // 方法对象，包含了组件的各种方法
+        methods: {
+            // 页面跳转方法
+            jump(url) {
+                jump(url);
+            },
+            // 显示弹出内容模态框的方法
+            showContentFunction(content) {
+                // 显示模态框
+                this.showContentModal = true;
+                // 替换内容中的图片路径为完整路径
+                this.showContent = content.replaceAll("src=\"upload/", "src=\"" + this.baseUrl + "upload/");
+            },
+            // 执行“无用”操作的方法（具体功能需根据实际需求确定）
+            // wuyong(id) {
+                // 使用 Element UI 的确认框
+            //     this.$confirm('确定要执行此操作吗？', '提示', {
+            //         confirmButtonText: '确定',
+            //         cancelButtonText: '取消',
+            //         type: 'warning'
+            //     }).then(() => {
+            //         // 使用 server.post 发送请求更新数据
+            //         server.post(`jiadianOrder/update`, {
+            //             id: id,
+            //             // jiadianOrderTypes:1, // 根据需要设置更新的字段
+            //         }).then(res => {
+            //             // 如果请求成功
+            //             if (res.code == 0) {
+            //                 // 显示成功消息并刷新数据列表
+            //                 this.$message({ type:'success', message: '操作成功', duration: 1500, onClose: () => {
+            //                         this.fetchDataList();
+            //                     }});
+            //             } else {
+            //                 // 如果请求失败，显示错误消息
+            //                 this.$message.error(res.msg);
+            //             }
+            //         }).catch(err => {
+            //             // 如果请求出错，显示错误消息
+            //             this.$message.error("请求失败");
+            //         });
+            //     }).catch(() => {
+            //         // 如果用户取消操作，显示提示消息
+            //         this.$message({ type: 'info', message: '已取消操作' });
+            //     });
+            // },
+            // 删除数据的方法
+            deleteData(data) {
+                // 使用 Element UI 的确认框
+                this.$confirm('确定要删除这条数据吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 使用 server.post 发送请求删除数据
+                    server.post(`jiadianOrder/delete`, [data.id]).then(res => {
+                        // 如果请求成功
+                        if (res.code == 0) {
+                            // 显示成功消息并刷新数据列表
+                            this.$message({ type:'success', message: '删除成功', duration: 1500, onClose: () => {
+                                    this.fetchDataList();
+                                }});
+                        } else {
+                            // 如果请求失败，显示错误消息
+                            this.$message.error(res.msg);
+                        }
+                    }).catch(err => {
+                        // 如果请求出错，显示错误消息
+                        this.$message.error("请求失败");
+                    });
+                }).catch(() => {
+                    // 如果用户取消操作，显示提示消息
+                    this.$message({ type: 'info', message: '已取消删除' });
+                });
+            },
+            // 处理退款操作的方法
+            refund(id) {
+                // 使用 Element UI 的确认框
+                this.$confirm('确定要退款吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 使用 server.get 发送请求进行退款操作
+                    server.get(`jiadianOrder/refund?id=${id}`).then(res => {
+                        // 如果请求成功
+                        if (res.code == 0) {
+                            // 显示成功消息并刷新数据列表
+                            this.$message({ type:'success', message: '退款申请成功', duration: 1500, onClose: () => {
+                                    this.fetchDataList();
+                                }});
+                        } else {
+                            // 如果请求失败，显示错误消息
+                            this.$message.error(res.msg);
+                        }
+                    }).catch(err => {
+                        // 如果请求出错，显示错误消息
+                        this.$message.error("请求失败");
+                    });
+                }).catch(() => {
+                    // 如果用户取消操作，显示提示消息
+                    this.$message({ type: 'info', message: '已取消退款' });
+                });
+            },
+            // 处理收货操作的方法
+            receiving(id) {
+                // 使用 Element UI 的确认框
+                this.$confirm('确定要收货吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 使用 server.get 发送请求进行收货操作
+                    server.get(`jiadianOrder/receiving?id=${id}`).then(res => {
+                        // 如果请求成功
+                        if (res.code == 0) {
+                            // 显示成功消息并刷新数据列表
+                            this.$message({ type:'success', message: '成功收货', duration: 1500, onClose: () => {
+                                    this.fetchDataList();
+                                }});
+                        } else {
+                            // 如果请求失败，显示错误消息
+                            this.$message.error(res.msg);
+                        }
+                    }).catch(err => {
+                        // 如果请求出错，显示错误消息
+                        this.$message.error("请求失败");
+                    });
+                }).catch(() => {
+                    // 如果用户取消操作，显示提示消息
+                    this.$message({ type: 'info', message: '已取消收货' });
+                });
+            },
+            // 打开评价模态框的方法
+            commentback(id) {
+                // 清空评价内容
+                this.jiadianCommentbackContent = null;
+                // 设置订单 id
+                this.jiadianCommentbackId = id;
+                // 显示评价模态框
+                this.jiadianCommentbackModal = true;
+            },
+            // 提交评价的方法
+            submitJiadianCommentback() {
+                // 如果评价内容为空
+                if (this.jiadianCommentbackContent == null || this.jiadianCommentbackContent == "" || this.jiadianCommentbackContent == "null") {
+                    // 显示错误消息
+                    this.$message.error("评价内容不能为空");
+                    return false;
+                }
+                // 构建请求参数
+                let params = {
+                    id: this.jiadianCommentbackId,
+                    commentbackText: this.jiadianCommentbackContent,
+                    // jiadianCommentbackPingfenNumber: this.jiadianCommentbackPingfenNumber
+                };
+                // 使用 server.get 发送请求提交评价
+                server.get("jiadianOrder/commentback", { params: params }).then(res => {
+                    // 如果请求成功
+                    if (res.code == 0) {
+                        // 显示成功消息并刷新数据列表，关闭模态框
+                        this.$message({ type:'success', message: '评价成功', duration: 1500, onClose: () => {
+                                this.fetchDataList();
+                            }});
+                    } else {
+                        // 如果请求失败，显示错误消息
+                        this.$message.error(res.msg);
+                    }
+                    this.jiadianCommentbackModal = false;
+                }).catch(err => {
+                    // 如果请求出错，显示错误消息并关闭模态框
+                    this.$message.error("请求失败");
+                    this.jiadianCommentbackModal = false;
+                });
+            },
+            // 获取用户信息的方法
+            getUserInfo() {
+                // 从本地存储中获取用户表名
+                let table = localStorage.getItem("userTable");
+                // 如果表名存在
+                if (table) {
+                    // 使用 server.get 发送请求获取用户信息
+                    server.get(`${table}/session`).then(res => {
+                        // 如果请求成功
+                        if (res.code === 0) {
+                            // 将用户信息存储到 data.user 中
+                            this.user = res.data;
+                        } else {
+                            // 如果请求失败，显示错误消息
+                            this.$message.error(res.msg);
+                        }
+                    }).catch(err => {
+                        // 如果请求出错，显示错误消息
+                        this.$message.error("获取用户信息失败");
+                    });
+                }
+            },
+            // 获取订单类型的方法
+            fetchOrderTypes() {
+                // 使用 server.get 发送请求获取订单类型
+                server.get("dictionary/page", { params: {
+                        page: 1,
+                        limit: 100,
+                        dicCode: 'jiadian_order_types'
+                    }}).then(res => {
+                    // 如果请求成功
+                    if (res.code == 0) {
+                        // 将订单类型列表存储到 data.jiadianOrderTypesList 中
+                        this.jiadianOrderTypesList = res.data.list;
+                    } else {
+                        // 如果请求失败，显示错误消息
+                        this.$message.error(res.msg);
+                    }
+                }).catch(err => {
+                    // 如果请求出错，显示错误消息
+                    this.$message.error("获取订单类型失败");
+                });
+            },
+            // 获取订单数据列表的方法
+            fetchDataList() {
+                // 构建请求参数
+                const params = {
+                    page: this.searchForm.page,
+                    limit: this.searchForm.limit,
+                    sort: this.searchForm.sort,
+                    order: this.searchForm.order,
+                    yonghuId: this.searchForm.yonghuId,
+                    jiadianOrderTypes: this.searchForm.jiadianOrderTypes,
+                };
+
+                // 使用 server.get 发送请求获取订单数据列表
+                server.get('jiadianOrder/list', { params }).then(res => {
+                    // 如果请求成功
+                    if (res.code === 0) {
+                        // 将订单数据列表存储到 data.dataList 中
+                        this.dataList = res.data.list;
+                        // 如果需要分页，可以在这里处理
+                    } else {
+                        // 如果请求失败，显示错误消息
+                        this.$message.error(res.msg);
+                    }
+                }).catch(err => {
+                    // 如果请求出错，显示错误消息
+                    this.$message.error('获取订单列表失败');
+                });
+            },
+            // 处理类型搜索点击的方法
+            handleTypeSearch(typeCode) {
+                // 更新搜索表单中的订单类型
+                this.searchForm.jiadianOrderTypes = typeCode;
+                // 重置到第一页
+                this.currentPage = 1;
+                // 获取更新后的订单数据列表
+                this.fetchDataList();
+            },
+            // 处理每页显示条数变化的方法
+            handleSizeChange(val) {
+                // 更新每页显示数量
+                this.pageSize = val;
+                // 切换每页条数时，回到第一页
+                this.currentPage = 1;
+                // 获取更新后的订单数据列表
+                this.fetchDataList();
+            },
+            // 处理当前页变化的方法
+            handleCurrentChange(val) {
+                // 更新当前页码
+                this.currentPage = val;
+                // 获取更新后的订单数据列表
+                this.fetchDataList();
+            },
+        }
+    });
+</script>
+</body>
+</html>

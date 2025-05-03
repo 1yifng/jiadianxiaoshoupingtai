@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>收货地址</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <script type="text/javascript" src="../../xznstatic/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../xznstatic/js/jquery.SuperSlide.2.1.1.js"></script>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+    <!-- 引入element样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    /* 主容器样式 - 用于居中内容 */
+    .center-container {
+        width: 1200px;  /* 固定宽度 */
+        margin: 0 auto;  /* 水平居中 */
+        margin-top: 20px;  /* 顶部间距 */
+        display: flex;  /* 弹性布局 */
+        margin-bottom: 20px;  /* 底部间距 */
+    }
+
+    /* 左侧面板样式 */
+    .proleft {
+        width: 280px;  /* 固定宽度 */
+        background: #fff;  /* 白色背景 */
+        padding-top: 30px;  /* 顶部内边距 */
+    }
+
+    /* 标题背景样式 */
+    .proleft .lefttit-bg {
+        background: var(--publicMainColor);  /* 使用CSS变量设置颜色 */
+        width: 90%;  /* 父元素宽度的90% */
+        padding-left: 20px;  /* 左侧内边距 */
+        padding-bottom: 10px;  /* 底部内边距 */
+    }
+
+
+    /* 段落2样式 */
+    .proleft .p2 {
+        font-size: 26px;  /* 大号字体 */
+        font-weight: bold;  /* 粗体 */
+        color: #fff;  /* 白色文字 */
+    }
+
+    /* 段落3样式 */
+    .proleft .p3 {
+        font-size: 18px;  /* 中等字体 */
+        font-weight: bold;  /* 粗体 */
+        color: #fff;  /* 白色文字 */
+    }
+
+    /* 无序列表样式 */
+    .ul1 {
+        padding-left: 27px;  /* 左侧内边距 */
+        padding-top: 20px;  /* 顶部内边距 */
+        padding-bottom: 20px;  /* 底部内边距 */
+    }
+
+
+    /* 列表项样式 */
+    .ul1 li {
+        position: relative;  /* 相对定位，用于子元素绝对定位 */
+        font-size: 15px;  /* 小号字体 */
+        color: #000;  /* 黑色文字 */
+        padding: 10px 0px 10px 35px;  /* 内边距 */
+        display: block;  /* 块级显示 */
+        transition: all 0.6s;  /* 悬停效果过渡动画 */
+    }
+
+    /* 列表项前的装饰线样式 */
+    .ul1 li b {
+        display: block;  /* 块级显示 */
+        position: absolute;  /* 绝对定位 */
+        left: 0;  /* 左侧对齐 */
+        width: 10px;  /* 初始宽度 */
+        height: 1px;  /* 细线 */
+        background: #aaaaaa;  /* 灰色 */
+        top: 50%;  /* 垂直居中 */
+        transform: translateY(-50%);  /* 精确垂直居中 */
+        transition: all 0.6s;  /* 过渡动画 */
+    }
+
+    /*hover：鼠标放控件上面后的变化：鼠标放个人中心、收货地址。。。上面横杠会变长*/
+    /* 悬停时装饰线效果 */
+    .ul1 li:hover b {
+        width: 31px;  /* 扩展宽度 */
+        background: var(--publicMainColor);  /* 使用CSS变量设置颜色 */
+        margin-right: 20px;  /* 右侧外边距 */
+    }
+    /*hover：鼠标放控件上面后的变化：鼠标放个人中心、收货地址。。。上面字会变紫色*/
+    /* 悬停时列表项效果 */
+    .ul1 li:hover {
+        color: var(--publicMainColor);  /* 悬停时改变文字颜色 */
+        margin-left: 20px;  /* 悬停时向右移动 */
+    }
+
+</style>
+<body class='bodyClass'>
+<div id="app">
+    <!-- 点击新增收货地址后弹出的框 -->
+    <!--  外层对话框 <el-dialog>
+    :title="addressTitle"：对话框标题，绑定到addressTitle变量，用于动态显示"新增地址"或"修改地址"
+    :visible.sync="dialogFormVisible"：控制对话框显示/隐藏，与dialogFormVisible变量双向绑定
+    :modal-append-to-body="false"：设置对话框不添加到body元素，保持当前DOM结构
+
+    表单容器 <el-form>
+    :model="addressFrom"：绑定表单数据对象，包含所有表单字段值
+    :rules="rules"：绑定表单验证规则对象
+    ref="ruleForm"：给表单注册引用，便于通过this.$refs.ruleForm访问表单方法
+
+    表单字段项 <el-form-item>
+    label：表单项的标签文本
+    :label-width="formLabelWidth"：标签宽度，绑定到formLabelWidth变量（如"120px"）
+    prop="addressName"：指定校验规则对应的字段名，对应rules中的规则
+
+    输入框 <el-input>
+    v-model="addressFrom.addressName"：双向绑定到addressFrom对象的addressName属性
+    autocomplete="off"：关闭浏览器自动填充功能
+
+    开关组件 <el-switch>
+    v-model="addressFrom.isdefaultTypes"：双向绑定是否默认地址的布尔值
+    -->
+    <el-dialog :title="addressTitle" :visible.sync="dialogFormVisible" :modal-append-to-body="false">
+        <el-form :model="addressFrom" :rules="rules" ref="ruleForm">
+            <el-form-item label="收货人" :label-width="formLabelWidth" prop="addressName">
+                <el-input v-model="addressFrom.addressName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" :label-width="formLabelWidth" prop="addressPhone">
+                <el-input v-model="addressFrom.addressPhone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="地址" :label-width="formLabelWidth" prop="addressDizhi">
+                <el-input v-model="addressFrom.addressDizhi" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="是否默认地址" :label-width="formLabelWidth" prop="isdefaultTypes">
+                <el-switch v-model="addressFrom.isdefaultTypes"></el-switch>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveaddress()">确 定</el-button>
+        </div>
+    </el-dialog>
+
+<!-- 标题 -->
+
+    <!-- 标题 -->
+    <div class="center-container">
+        <!-- 个人中心菜单 config.js-->
+         <div class="proleft fl" style="width: 20%;">
+             <div class="lefttit">
+                 <div class="lefttit-bg">
+                     <p class="p2">USER / CENTER</p>
+                     <p class="p3">收货地址</p>
+                 </div>
+             </div>
+<!--             渲染一个菜单列表，每个菜单项显示名称（item.name），点击后跳转到对应 url。-->
+<!--             如果当前页是 ../address/list.html，对应的菜单项会高亮（通过 on 类）-->
+
+<!--                v-for="(item,index) in centerMenu"-->
+<!--             循环遍历 centerMenu 数组，动态生成 <li> 菜单项。-->
+<!--             item：当前遍历的菜单项对象（如 {name: '收货地址', url: '../address/list.html'}）。-->
+<!--             index：当前项的索引（从 0 开始）。-->
+
+<!--             v-bind:key="index"-->
+<!--             为每个 <li> 绑定唯一 key（用 index 作为临时 key），帮助 Vue 高效更新 DOM。-->
+
+<!--             :class="item.url=='../address/list.html'?'on':''"-->
+<!--             动态绑定 CSS 类名 on。 如果 item.url 等于 '../address/list.html'，则添加 on 类，显示高亮。否则为空-->
+
+<!--             @click="jump(item.url)"-->
+<!--             点击菜单项时，调用 Vue 实例的 jump 方法，并传入 item.url 作为参数。然后执行jump跳转到对应页面-->
+
+<!--             <b></b>{{item.name}}-->
+<!--             装饰性元素，这里我搞成了一条细线。{{item.name}}：显示菜单项的名称-->
+             <ul class="ul1">
+                 <li v-for="(item,index) in centerMenu" v-bind:key="index" :class="item.url=='../address/list.html'?'on':''" @click="jump(item.url)">
+                     <b></b>{{item.name}}
+                 </li>
+             </ul>
+         </div>
+        <!-- 个人中心菜单 -->
+        <div class="right-container sub_borderColor" :style='{"padding":"20px","boxShadow":"0px rgba(255,0,0,.8)","margin":"0","backgroundColor":"#fff","borderRadius":"0","borderWidth":"1px","borderStyle":"solid","width":"80%"}'>
+            <div class="btn-container" :style='{"padding":"0 10px","boxShadow":"0 0 0px rgba(255,0,0,.8)","margin":"10px 0 10px 0","borderColor":"rgba(0,0,0,.3)","backgroundColor":"rgba(255, 255, 255, 1)","borderRadius":"4px","alignItems":"flex-end","borderWidth":"0","borderStyle":"solid","justifyContent":"flex-end","height":"64px","textAlign":"right"}'>
+                <!-- 使用 Element UI 按钮 -->
+                <!-- 页面右上角放添加新地址按钮 -->
+                <el-button @click="addaddress" type="primary" size="medium" class="sub_backgroundColor" :style='{"padding":"0 15px","boxShadow":"0 0 8px rgba(0,0,0,0)","margin":"0 0 0 10px","borderColor":"#409EFF","color":"#fff","borderRadius":"4px","borderWidth":"0","width":"auto","fontSize":"14px","borderStyle":"solid","height":"40px"}'>
+                    <i v-if="true" class="el-icon-plus"></i> 添加新地址
+                </el-button>
+            </div>
+            <!-- 使用 Element UI 表格 -->
+            <!--  -->
+            <el-table :data="dataList" style="width: 100%">
+<!--                <el-table-column prop="id" label="主键" width="180"></el-table-column>-->
+                <el-table-column prop="addressName" label="收货人" width="180"></el-table-column>
+                <el-table-column prop="addressPhone" label="电话" width="180"></el-table-column>
+                <el-table-column prop="addressDizhi" label="地址"></el-table-column>
+                <el-table-column prop="isdefaultValue" label="是否默认地址" width="150"></el-table-column>
+                <el-table-column label="操作" width="200">
+                    <template slot-scope="scope">
+                        <el-button @click="updateaddress(scope.row)" type="warning" size="mini">修改</el-button>
+                        <el-button @click="deleteClick(scope.row.id)" type="danger" size="mini">
+                            <i class="el-icon-delete"></i> 删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 使用 Element UI 分页 -->
+            <div class="pager" style="padding-top: 20px; text-align: center;">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入element样式 -->
+<!-- 引入 axios 工具 -->
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../modules/config.js"></script>
+<script src="../../js/utils.js"></script>
+
+<script type="text/javascript">
+    // 定义全局过滤器，用于处理文本显示
+    Vue.prototype.myFilters = function (msg) {
+        if(msg==null || msg==""){
+            return "";  // 空值处理
+        }else if (msg.length>20){
+            msg.replace(/\n/g, "<br>");  // 替换换行符为HTML换行标签
+            return msg.substring(0,30)+"......";  // 截断长文本并添加省略号
+        }else{
+            return msg.replace(/\n/g, "<br>");  // 普通情况只替换换行符
+        }
+    };
+
+    // 创建Vue实例 (Vue.js技术)
+    var vue = new Vue({
+        el: '#app',  // 挂载到ID为app的DOM元素
+        data: {
+            // 用户相关数据 (使用localStorage存储技术)
+            userId: localStorage.getItem("userid"),  // 当前登录用户ID
+            sessionTable: localStorage.getItem("userTable"),  // 登录账户所在表名
+            role: localStorage.getItem("role"),  // 用户权限
+            user:{},  // 当前登录用户信息对象
+
+            // 菜单数据
+            centerMenu: centerMenu,  // 中心菜单配置
+
+            // 项目路径 (使用axios技术)
+            baseUrl: server.baseURL,  // API基础路径
+
+            // 内容模态框控制
+            showContentModal:false,  // 是否显示内容模态框
+            showContent:"",  // 模态框显示的内容
+
+            // 默认地址类型列表
+            isdefaultTypesList: [],
+
+             // 查询条件表单 (Vue双向数据绑定技术) 绑定搜索按钮和获取收货地址列表数据 el-model双向绑定搜索按钮实现查找功能，没有绑就实现展示列表数据功能
+            searchForm: {
+                sort: "id",  // 排序字段
+                order: "desc",  // 排序方式
+                addressName: "",  // 地址名称筛选
+                addressPhone: "",  // 电话筛选
+                addressDizhi: "",  // 地址筛选
+                isdefaultTypes: "",  // 是否默认筛选
+                yonghu: localStorage.getItem('userid')  // 用户ID筛选
+            },
+
+            // 地址相关数据
+            addressTitle: null,  // 地址表单标题
+            dialogFormVisible: false,  // 控制地址表单弹窗显示 (Element UI技术)
+            formLabelWidth: '120px',  // 表单标签宽度
+            addressFrom: {  // 地址表单数据
+                id: "",  // 地址ID
+                addressName: "",  // 收件人姓名
+                addressPhone: "",  // 联系电话
+                addressDizhi: "",  // 详细地址
+                isdefaultTypes: false,  // 是否默认地址 (布尔值)
+                yonghuId: localStorage.getItem("userid")  // 关联用户ID
+            },
+
+            // 表单验证规则 (Element UI表单验证技术)
+            rules: {
+                addressName: [
+                    { required: true, message: '收货人 不能为空', trigger: 'blur' },
+                ],
+                addressPhone: [
+                    { required: true, message: '电话不能为空', trigger: 'blur' },
+                    { pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+                        message: '电话格式不对',
+                        trigger: 'blur'
+                    }
+                ],
+                addressDizhi: [
+                    { required: true, message: '地址 不能为空', trigger: 'blur' },
+                ],
+            },
+
+            // 数据列表
+            dataList: [],  // 地址数据列表
+
+            // 分页相关 (Element UI分页技术)
+            currentPage: 1,  // 当前页码
+            pageSize: 5,  // 每页显示数量
+            total: 0,  // 数据总数
+        },
+
+        // 过滤器 (Vue过滤器技术)
+        filters: {
+            subString: function(val) {
+                if (val) {
+                    val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');  // 移除HTML标签
+                    if (val.length > 60) {
+                        val = val.substring(0, 60);  // 截断长文本
+                        val+='...';  // 添加省略号
+                    }
+                    return val;
+                }
+                return '';
+            }
+        },
+
+        // 计算属性 (Vue计算属性技术)
+        computed: {
+        },
+
+        // 生命周期钩子 (Vue生命周期技术)
+        mounted() {
+            // 设置跳转地址到localStorage
+            localStorage.setItem("goUtl","./pages/address/list.html");
+            // 获取用户信息
+            this.getUserInfo();
+            // 获取地址列表数据
+            this.fetchDataList();
+        },
+
+        // 方法定义
+        methods: {
+            // 页面跳转 (前端路由技术)
+            jump(url) {
+                // 调用外部函数jump进行页面跳转
+                jump(url);
+            },
+
+            // 显示内容模态框
+            showContentFunction(content) {
+                this.showContentModal=true;  // 显示模态框
+                // 处理图片路径，添加基础URL
+                this.showContent=content.replaceAll("src=\"upload/","src=\""+this.baseUrl+"upload/");
+            },
+
+            // 删除地址 (Element UI确认框技术)
+            deleteClick(id) {
+                // 点击删除弹出提示框
+                this.$confirm('是否确认删除？', '提示', {
+                    confirmButtonText: '删除',  // 确认按钮文本
+                    cancelButtonText: '取消',  // 取消按钮文本
+                    type: 'warning'  // 提示类型为警告
+                }).then(() => {
+                    // 用户确认删除，发送删除请求 (axios技术)
+                    server.post(`address/delete`, [id]).then(res => {
+                        if (res.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            // 处理分页边界情况：如果删除的是最后一条且不在第一页，则返回上一页
+                            if (this.dataList.length === 1 && this.currentPage > 1) {
+                                this.currentPage--;
+                            }
+                            this.fetchDataList();  // 刷新列表数据
+                        } else {
+                            this.$message.error(res.msg);  // 显示错误消息
+                        }
+                    }).catch(err => {
+                        this.$message.error('请求失败');  // 请求失败处理
+                    });
+                }).catch(() => {
+                    // 用户点击取消，不做任何操作
+                });
+            },
+
+            /* updateaddress、addaddress、saveaddress是新增/修改并保存的方法，点击新增/修改弹出弹窗 */
+            // 更新地址 (深拷贝技术)
+            updateaddress(row) {
+                // 深拷贝地址数据，避免引用问题
+                this.addressFrom = JSON.parse(JSON.stringify(row));
+                this.addressTitle = '修改地址';  // 设置弹窗标题
+                // 转换默认地址标志 (1/2转布尔值)
+                this.addressFrom.isdefaultTypes = row.isdefaultTypes == 2 ? true : false;
+                this.addressFrom.yonghuId = this.userId;  // 设置用户ID
+                this.dialogFormVisible = true;  // 显示弹窗
+            },
+
+            // 新增地址 (表单重置技术)
+            addaddress() {
+                // 初始化表单数据
+                this.addressFrom={
+                    id: "",
+                    addressName: "",
+                    addressPhone: "",
+                    addressDizhi: "",
+                    isdefaultTypes: false,
+                    yonghuId: this.userId
+                };
+                this.addressTitle = '新增地址';  // 设置弹窗标题
+                this.dialogFormVisible = true;  // 显示弹窗
+                // 清除表单验证 (Element UI表单技术)
+                this.$nextTick(() => {
+                    if (this.$refs['ruleForm']) {
+                        this.$refs['ruleForm'].clearValidate();  // 清除验证状态
+                    }
+                });
+            },
+
+            // 保存地址 (表单验证技术)
+            saveaddress(){
+                let _this = this;
+                // 深拷贝表单数据
+                let saveData = JSON.parse(JSON.stringify(this.addressFrom));
+                // 转换默认地址标志 (布尔值转1/2)
+                saveData.isdefaultTypes = this.addressFrom.isdefaultTypes ? 2 : 1;
+
+                // 表单验证
+                this.$refs["ruleForm"].validate(valid => {
+                    if (valid) {  // 验证通过
+                        // 根据是否有ID决定是新增还是更新
+                        server.post(`address/${!saveData.id ? "save" : "update"}`, saveData).then(res => {
+                            if (res.code === 0) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '操作成功'
+                                });
+                                _this.dialogFormVisible = false;  // 关闭弹窗
+                                _this.fetchDataList();  // 刷新列表
+                            } else {
+                                this.$message.error(res.msg);  // 显示错误消息
+                            }
+                        }).catch(err => {
+                            this.$message.error('请求失败');
+                            _this.dialogFormVisible = false;
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;  // 验证失败
+                    }
+                });
+            },
+
+
+            /*getUserInfo、fetchDataList、handleSizeChange、handleCurrentChange是获取列表数据并展示的方法*/
+            // 获取用户信息 (REST API调用技术)
+            getUserInfo() {
+                let table = localStorage.getItem("userTable");  // 从本地存储获取用户表名
+                if(table){
+                    server.get(table+"/session").then(res => {
+                        if (res.code === 0) {
+                            this.user = res.data;  // 设置用户信息
+                        } else {
+                            this.$message.error(res.msg);  // 显示错误消息
+                        }
+                    }).catch(err => {
+                        // 静默失败，不处理错误
+                    });
+                }
+            },
+
+            // 获取地址列表数据 (分页查询技术)
+            fetchDataList() {
+                server.get('address/list', {
+                    params: {
+                        page: this.currentPage,  // 当前页码
+                        limit: this.pageSize,    // 每页数量
+                        yonghuId: this.userId,   // 用户ID
+                        sort: this.searchForm.sort,  // 排序字段
+                        order: this.searchForm.order, // 排序方式
+                    }
+                }).then(res => {
+                    if (res.code === 0) {
+                        this.dataList = res.data.list;  // 设置数据列表
+                        this.total = res.data.total;    // 设置总条数
+                    } else {
+                        this.$message.error(res.msg);
+                        this.dataList = [];  // 清空数据列表
+                        this.total = 0;     // 重置总条数
+                    }
+                }).catch(err => {
+                    this.$message.error('获取地址列表失败');
+                    this.dataList = [];
+                    this.total = 0;
+                });
+            },
+
+            // 处理分页大小改变 (Element UI分页技术)
+            handleSizeChange(val) {
+                this.pageSize = val;      // 设置新的每页数量
+                this.currentPage = 1;     // 重置到第一页
+                this.fetchDataList();     // 重新获取数据
+            },
+
+            // 处理当前页改变
+            handleCurrentChange(val) {
+                this.currentPage = val;  // 设置新的当前页码
+                this.fetchDataList();     // 重新获取数据
+            }
+        }
+    });
+    
+</script>
+</body>
+</html>

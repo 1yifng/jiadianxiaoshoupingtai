@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>商品详情</title>
+    <!-- bootstrap样式 -->
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <!-- 移除Layui CSS引用 -->
+    <!-- 样式 -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <!-- 主题（主要颜色设置） -->
+    <link rel="stylesheet" href="../../css/theme.css">
+    <!-- 通用的css -->
+    <link rel="stylesheet" href="../../css/common.css">
+    <!-- 引入Element UI样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <style>
+        .detail-container {
+            padding: 20px;
+        }
+        .detail-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        .detail-item-label {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        .detail-item-content {
+            display: inline-block;
+        }
+        .detail-content {
+            margin-top: 20px;
+        }
+        /*商品详情的商品图片*/
+        .el-carousel__item img {
+            width: 100%;
+            height: 100%;
+        }
+        .action-buttons {
+            margin-top: 20px;
+        }
+        .action-buttons  {
+            margin-right: 10px;
+        }
+        .comment-container {
+            margin-top: 30px;
+        }
+        .comment-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .comment-user {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-content {
+            margin-bottom: 5px;
+        }
+        .comment-time {
+            color: #999;
+            font-size: 12px;
+        }
+        .comment-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="detail-container">
+        <!-- 面包屑导航 -->
+        <div class="breadcrumb">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><a href="../home/home.html">首页</a></el-breadcrumb-item>
+                <el-breadcrumb-item><a href="./list.html">商品列表</a></el-breadcrumb-item>
+                <el-breadcrumb-item>{{detail.jiadianName}}</el-breadcrumb-item>
+            </el-breadcrumb>
+            
+            <!-- 收藏按钮 -->
+            <el-button v-if="storeupFlag" @click="addJiadianCollection()" type="danger" icon="el-icon-star-on" circle></el-button>
+            <el-button v-else @click="addJiadianCollection()" type="info" icon="el-icon-star-off" circle></el-button>
+        </div>
+        
+        <!-- 商品详情 -->
+        <div class="row">
+            <!-- 商品图片展示  -->
+            <div class="col-md-6">
+                    <img :src="baseUrl + '/' + swiperList[0]" alt="商品图片" style="width: 400px; height: 300px;margin-left: 100px">
+            </div>
+            
+            <!-- 商品信息 -->
+            <div class="col-md-6">
+                <h2 class="detail-title">{{detail.jiadianName}}</h2>
+                
+                <div class="detail-item">
+                    <span class="detail-item-label">商品编号：</span>
+                    <span class="detail-item-content">{{detail.jiadianUuidNumber}}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-item-label">商品类型：</span>
+                    <span class="detail-item-content">{{detail.jiadianValue}}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-item-label">库存数量：</span>
+                    <span class="detail-item-content">{{detail.jiadianKucunNumber}}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-item-label">原价：</span>
+                    <span class="detail-item-content" style="text-decoration: line-through;">¥{{detail.jiadianOldMoney}}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-item-label">现价：</span>
+                    <span class="detail-item-content" style="color: red; font-size: 20px; font-weight: bold;">¥{{detail.jiadianNewMoney}}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-item-label">购买数量：</span>
+                    <span class="detail-item-content">
+                        <el-input-number v-model="buyNumber" :min="1" :max="detail.jiadianKucunNumber"></el-input-number>
+                    </span>
+                </div>
+                
+                <div class="action-buttons">
+                    <el-button type="primary" @click="addCartTap">加入购物车</el-button>
+                    <el-button type="danger" @click="buyTap">立即购买</el-button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品详情内容 -->
+        <div class="detail-content">
+            <el-divider content-position="left">商品详情</el-divider>
+            <div v-html="detail.jiadianContent"></div>
+        </div>
+
+        
+        <!-- 评论区域 -->
+        <div class="comment-container">
+            <el-divider content-position="left">用户评论</el-divider>
+            
+            <!-- 评论列表 -->
+            <div v-if="jiadianCommentbackDataList.length > 0">
+                <div v-for="(item, index) in jiadianCommentbackDataList" :key="index" class="comment-item">
+                    <div class="comment-user">{{item.yonghuName}}</div>
+                    <div class="comment-content">{{item.jiadianCommentbackText}}</div>
+                    <div class="comment-time">{{item.insertTime}}</div>
+                </div>
+                
+                <!-- 分页 -->
+                <el-pagination
+                    @size-change="jiadianCommentbackSizeChangeHandle"
+                    @current-change="jiadianCommentbackCurrentChangeHandle"
+                    :current-page="jiadianCommentbackPage"
+                    :page-sizes="[10]"
+                    :page-size="jiadianCommentbackLimit"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="jiadianCommentbackTotal">
+                </el-pagination>
+            </div>
+            <div v-else>
+                <el-empty description="暂无评论"></el-empty>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入JS库 -->
+<script src="../../js/jquery.js"></script>
+<script src="../../js/vue.js"></script>
+<!-- 引入Element UI组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<script src="../../js//axios.min.js"></script>
+<!-- 引入axios工具 -->
+<script src="../../js/request.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/utils.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            user: {},
+            swiperList: [],
+            detail: {
+                id: 0
+            },
+            title: '',
+            totalScore: 0,
+            baseUrl: "",
+            storeupFlag: false,
+            detailTable: 'jiadian',
+            buyNumber: 1,
+            jiadianCommentbackDataList: [],
+            // jiadianRecommendList: [],
+            jiadianCommentbackPage: 1,
+            jiadianCommentbackLimit: 10,
+            jiadianCommentbackTotal: 0,
+            jiadianCommentbackForm: {
+                jiadianCommentbackText: '',
+                jiadianId: '',
+                yonghuId: ''
+            }
+        },
+        methods: {
+            jump(url) {
+                jump(url)
+            },
+
+            // 添加到购物车
+            addCartTap() {
+                if (!localStorage.getItem('userid')) {
+                    this.$message.error('请先登录');
+                    return;
+                }
+
+                // // 库存限制
+                // if (this.detail.jiadianKucunNumber > 0 && this.detail.jiadianKucunNumber < this.buyNumber) {
+                //     this.$message.error('库存不足');
+                //     return;
+                // }
+
+                // 查询是否已经添加到购物车
+                server.get('cart/list', {
+                    params: {
+                        yonghuId: localStorage.getItem('userid'),
+                        jiadianId: this.detail.id,
+                    }
+                }).then(res => {
+                    if (res.data.list.length > 0) {
+                        this.$message.warning('该商品已经添加到购物车');
+                        return;
+                    }
+
+                    server.post('cart/add', {
+                        yonghuId: localStorage.getItem('userid'),
+                        jiadianId: this.detail.id,
+                        buyNumber: this.buyNumber,
+                        jiadianName: this.detail.jiadianName,
+                        jiadianPhoto: this.detail.jiadianPhoto.split(',')[0],
+                        jiadianNewMoney: this.detail.jiadianNewMoney
+                    }).then(res => {
+                        if (res.code === 0) {
+                            this.$message.success('添加到购物车成功');
+                        } else {
+                            this.$message.error(res.msg);
+                        }
+                    });
+                });
+            },
+
+            // 立即购买
+            buyTap() {
+                if (!localStorage.getItem('userid')) {
+                    this.$message.error('请先登录');
+                    return;
+                }
+
+                // 库存限制
+                if (this.detail.jiadianKucunNumber > 0 && this.detail.jiadianKucunNumber < this.buyNumber) {
+                    this.$message.error('商品库存不足');
+                    return;
+                }
+
+                // 保存到storage中，在确认下单页面中获取要购买的商品
+                localStorage.setItem('jiadians', JSON.stringify([{
+                    jiadianId: this.detail.id,
+                    jiadianName: this.detail.jiadianName,
+                    jiadianUuidNumber: this.detail.jiadianUuidNumber,
+                    jiadianPhoto: this.detail.jiadianPhoto,
+                    jiadianTypes: this.detail.jiadianTypes,
+                    jiadianKucunNumber: this.detail.jiadianKucunNumber,
+                    jiadianOldMoney: this.detail.jiadianOldMoney,
+                    jiadianNewMoney: this.detail.jiadianNewMoney,
+                    jiadianClicknum: this.detail.jiadianClicknum,
+                    jiadianContent: this.detail.jiadianContent,
+                    shangxiaTypes: this.detail.shangxiaTypes,
+                    jiadianDelete: this.detail.jiadianDelete,
+                    createTime: this.detail.createTime,
+                    buyNumber: this.buyNumber,
+                    yonghuId: localStorage.getItem('userid'),
+                }]));
+
+                // 跳转到确认下单页面
+                this.jump('../jiadianOrder/confirm.html');
+            },
+
+            // 获取URL参数
+            getParam(name) {
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r!=null) return unescape(r[2]);
+                return null;
+            },
+
+            // 加载评论
+            loadJiadianCommentback() {
+                server.get('jiadianCommentback/list', {
+                    params: {
+                        page: this.jiadianCommentbackPage,
+                        limit: this.jiadianCommentbackLimit,
+                        jiadianId: this.detail.id
+                    }
+                }).then(res => {
+                    this.jiadianCommentbackDataList = res.data.list;
+                    this.jiadianCommentbackTotal = res.data.total;
+                });
+            },
+
+            // 添加收藏
+            addJiadianCollection() {
+                if (!localStorage.getItem('userid')) {
+                    this.$message.error('请先登录');
+                    return;
+                }
+
+                if(this.storeupFlag){
+                    //取消收藏-删除记录
+                    server.get('jiadianCollection/delete',{
+                        params:{
+                            jiadianId:this.detail.id,
+                            yonghuId:localStorage.getItem('userid')
+                        }
+                    }).then(res=>{
+                        if(res.code===0)
+                        {
+                            this.storeupFlag=false;
+                            this.$message.success("取消收藏成功");
+                        }else{
+                            this.$message.error(res.msg);
+                        }
+                    });
+                }else{
+                    //添加收藏
+                    server.post('jiadianCollection/add',{
+                        jiadianId:this.detail.id,
+                        yonghuId:localStorage.getItem('userid'),
+                        jiadianCollectionTypes:1
+                        }).then(res=>{
+                            if(res.code===0){
+                                this.storeupFlag=true;
+                                this.$message.success("收藏成功");
+                            }else{
+                                this.$message.error(res.msg);
+                            }
+                    })
+                }
+
+            },
+
+            // 评论分页大小改变
+            jiadianCommentbackSizeChangeHandle(val) {
+                this.jiadianCommentbackLimit = val;
+                this.jiadianCommentbackPage = 1;
+                this.loadJiadianCommentback();
+            },
+
+            // 评论页码改变
+            jiadianCommentbackCurrentChangeHandle(val) {
+                this.jiadianCommentbackPage = val;
+                this.loadJiadianCommentback();
+            },
+
+        },
+        mounted() {
+            // 获取当前登录用户信息
+            let table = localStorage.getItem("userTable");
+            if (table) {
+                server.get(table + "/session").then(res => {
+                    if (res.code === 0) {
+                        this.user = res.data;
+                    }
+                });
+            }
+            
+            // 获取baseUrl
+            this.baseUrl = "http://localhost:8080/jiadianxiaoshoupingtai"            
+            
+            // 获取商品详情 - 修改这里，使用自定义的getParam方法
+            var id = this.getParam('id');
+            server.get('jiadian/detail/' + id).then(res => {
+                if (res.code === 0) {
+                    this.detail = res.data;
+                    this.title = this.detail.jiadianName;
+
+                    // 加载评论
+                    this.loadJiadianCommentback();
+                    
+                    // 轮播图
+                    if (this.detail.jiadianPhoto) {
+                        this.swiperList = this.detail.jiadianPhoto.split(',');
+                    }
+                    
+                    // 更新点击次数
+                    server.post('jiadian/update', {
+                        id: id,
+                        jiadianClicknum: this.detail.jiadianClicknum + 1
+                    });
+                }
+            });
+
+            
+            // 检查是否已收藏
+            if (localStorage.getItem('userid')) {
+                server.get('jiadianCollection/list', {
+                    params: {
+                        page: 1,
+                        limit: 1,
+                        jiadianId: this.getParam('id'),
+                        yonghuId: localStorage.getItem('userid'),
+                    }
+                }).then(res => {
+                    if (res.data.total > 0) {
+                        res.data.list.forEach(element => {
+                            if (element.jiadianCollectionTypes == 1) {
+                                this.storeupFlag = true;
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

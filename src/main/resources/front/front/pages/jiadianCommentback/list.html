@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <title>商品评价</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../../xznstatic/css/common.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/style.css"/>
+    <link rel="stylesheet" href="../../xznstatic/css/bootstrap.min.css" />
+    <!-- 引入element样式 -->
+    <link rel="stylesheet" href="../../xznstatic/css/element.min.css">
+    <link rel="stylesheet" href="../../css/theme.css"/>
+</head>
+<style>
+    .center-container {
+        width: 1200px;
+        margin: 0 auto;
+        margin-top: 20px;
+        display: flex;
+        margin-bottom: 20px;
+    }
+    .proleft {
+        width: 280px;
+        background: #fff;
+        padding-top: 30px;
+    }
+
+    .proleft .lefttit-bg {
+        background: var(--publicMainColor);
+        width: 90%;
+        padding-left: 20px;
+        padding-bottom: 10px;
+    }
+
+    .proleft .p2 {
+        font-size: 26px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .proleft .p3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .ul1 {
+        padding-left: 27px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .ul1 li {
+        position: relative;
+    }
+
+    .ul1 li {
+        font-size: 15px;
+        color: #000;
+        padding: 10px 0px 10px 35px;
+        display: block;
+        transition: all 0.6s;
+    }
+
+    .ul1 li b {
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 10px;
+        height: 1px;
+        background: #aaaaaa;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.6s;
+    }
+
+    .ul1 li.on b, .ul1 li:hover b {
+        width: 31px;
+        background: var(--publicMainColor);
+        margin-right: 20px;
+    }</style>
+<body class='bodyClass'>
+<div id="app">
+    <el-dialog title="评价内容" :visible.sync="showContentModal" :modal-append-to-body="false">
+        <div class="content" style="word-break: break-all;" v-html="showContent">
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="showContentModal = false">关 闭</el-button>
+        </div>
+    </el-dialog>
+<!-- 点击评价后的弹窗 -->
+<!--        <el-dialog title="评论" :visible.sync="jiadianCommentbackModal" :modal-append-to-body="false">-->
+<!--            <el-form>-->
+<!--                <el-form-item label="评论信息">-->
+<!--                    <el-input type="textarea" v-model="jiadianCommentbackContent"></el-input>-->
+<!--                </el-form-item>-->
+<!--            </el-form>-->
+<!--            <div slot="footer" class="dialog-footer">-->
+<!--                <el-button @click="jiadianCommentbackModal = false">取 消</el-button>-->
+<!--                <el-button type="primary" @click="submitJiadianCommentback()">确 定</el-button>-->
+<!--            </div>-->
+<!--        </el-dialog>-->
+
+    <!-- 标题 -->
+    <div class="center-container">
+        <!-- 个人中心菜单 config.js-->
+ <div class="proleft fl" style="width: 20%;">
+     <div class="lefttit">
+         <div class="lefttit-bg">
+             <p class="p2">USER / CENTER</p>
+             <p class="p3">商品评价</p>
+         </div>
+     </div>
+     <ul class="ul1">
+         <li v-for="(item,index) in centerMenu" v-bind:key="index" :class="item.url=='../jiadianCommentback/list.html'?'on':''" @click="jump(item.url)">
+             <b></b>{{item.name}}
+         </li>
+     </ul>
+ </div>
+        <!-- 个人中心菜单 -->
+        <div class="right-container sub_borderColor" style="overflow: auto" :style='{"display":"grid","padding":"20px","boxShadow":"0px rgba(255,0,0,.8)","margin":"0","backgroundColor":"#fff","borderRadius":"0","borderWidth":"1px","borderStyle":"solid","width":"80%"}'>
+            <div style="display: flex;height: 60px;align-items: center;margin-left: 15px;justify-content: space-between">
+<!--                <button @click="jump('../jiadianCommentback/add.html')" class="layui-btn layui-btn-lg btn-theme sub_backgroundColor" :style='{"padding":"0 15px","boxShadow":"0 0 8px rgba(0,0,0,0)","margin":"0 0 0 10px","borderColor":"#409EFF","color":"#333","borderRadius":"4px","borderWidth":"0","width":"auto","fontSize":"14px","borderStyle":"solid","height":"40px"}'>
+                    <i v-if="true" class="layui-icon">&#xe654;</i> 添加商品评价信息
+                </button>-->
+            </div>
+            <table class="layui-table" lay-skin="nob">
+                <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>商品类型</th>
+                        <th>商品照片</th>
+                        <th>评价内容</th>
+                        <th>评价时间</th>
+                        <th>回复内容</th>
+                        <th>回复时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in dataList" v-bind:key="index">
+
+                        <td>{{item.jiadianName}}</td>
+                        <td>{{item.jiadianValue}}</td>
+                        <td>
+                            <img v-if="item.jiadianPhoto" :src="baseUrl+item.jiadianPhoto" style="width: 100px;height: 100px;object-fit: cover;">
+                            <span v-else >暂无照片</span>
+                        </td>
+                        <td>
+                            <el-button
+                                v-if="item.jiadianCommentbackText != null && item.jiadianCommentbackText != ''"
+                                @click="showContentFunction(item.jiadianCommentbackText)"
+                                type="success"
+                                size="small"
+                            style="background-color:#6495ed ">
+                        点击查看
+                        </el-button>
+                        </td>
+                        <td>{{item.insertTime}}</td>
+                        <td>
+                            <el-button
+                                v-if="item.replyText != null && item.replyText != ''"
+                                @click="showContentFunction(item.replyText)"
+                                type="success"
+                                size="small"
+                                style="background-color:#6495ed">
+                            点击查看
+                        </el-button>
+                        </td>
+                        <td>{{item.updateTime}}</td>
+                        <td style="width: 100px;">
+                        <!--
+                            <button @click="jump('../jiadianCommentback/add.html?jiadianCommentbackId='+item.id)" type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">
+                                 修改
+                            </button>
+                        -->
+                            <el-button
+                                    @click="deleteData(item)"
+                                    size="small"
+                                    type="warning"
+                                    icon="el-icon-delete"
+                                    style="border-radius: 4px;background-color: #F56C6C"
+                            >
+                                删除
+                            </el-button>
+<!--                            <button v-if="item.jiadianCommentbackTypes==1 && false" @click="wuyong(item.id)" type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">-->
+<!--                                无用按钮-->
+<!--                            </button>-->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pager" id="pager" :style="{textAlign:'center'}"></div>
+        </div>
+    </div></div>
+
+<script src="../../xznstatic/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="../../xznstatic/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>-->
+<!-- 移除 layui.js -->
+<!-- <script src="../../layui/layui.js"></script> -->
+<script src="../../js/vue.js"></script>
+<!-- 引入element组件库 -->
+<script src="../../xznstatic/js/element.min.js"></script>
+<!-- 引入 axios 工具 -->
+<script src="../../js/axios.min.js"></script>
+<script src="../../js/request.js"></script>
+<!-- 组件配置信息 -->
+<script src="../../js/config.js"></script>
+<!-- 扩展插件配置信息 -->
+<script src="../../modules/config.js"></script>
+<!-- 工具方法 -->
+<script src="../../js/utils.js"></script>
+
+<script type="text/javascript">
+    Vue.prototype.myFilters = function (msg) {
+        if(msg==null || msg==""){
+            return "";
+        }else if (msg.length>20){
+            msg.replace(/\n/g, "<br>");
+            return msg.substring(0,30)+"......";
+        }else{
+            return msg.replace(/\n/g, "<br>");
+        }
+    };
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            userId: localStorage.getItem("userid"),//当前登录人的id
+            sessionTable: localStorage.getItem("userTable"),//登录账户所在表名
+            role: localStorage.getItem("role"),//权限
+            user:{},//当前登录用户信息
+            centerMenu: centerMenu,
+            baseUrl : (window.baseUrl || '') + '/jiadianxiaoshoupingtai/',
+            showContentModal:false,
+            showContent:"",
+
+            //订单评论模态框
+            jiadianCommentbackContent: null,//评价内容
+            jiadianCommentbackId: null,//操作数据id
+            jiadianCommentbackModal: false,//模态框状态
+            jiadianCommentbackPingfenNumber:0,//评分
+            //查询条件 (移除分页信息 page, limit)
+            searchForm: {
+                 sort: "id"//字段
+                ,order: "desc"//asc desc
+                ,yonghuId: localStorage.getItem('userid')//只能查询自己
+                ,jiadianCommentbackText: ""
+                ,replyText: ""
+            },
+
+            dataList: [],
+            // 添加分页相关 data 属性
+            currentPage: 1,
+            pageSize: 8, // 保持和原 limit 一致
+            total: 0,
+        },
+        filters: {
+            subString: function(val) {
+                if (val) {
+                    val = val.replace(/<[^<>]+>/g, '').replace(/undefined/g, '');
+                    if (val.length > 60) {
+                        val = val.substring(0, 60);
+                        val+='...';
+                    }
+                    return val;
+                }
+                return '';
+            }
+        },
+        computed: {
+        },
+        mounted() {
+            // 设置 localStorage 中的跳转地址
+            localStorage.setItem("goUtl","./pages/jiadianCommentback/list.html");
+            // 获取用户信息
+            this.getUserInfo();
+            // 获取评价列表数据
+            this.fetchDataList();
+        },
+        methods: {
+            jump(url) {
+                jump(url);
+            },
+            showContentFunction(content) {
+                this.showContentModal=true;
+                // 确保替换 baseUrl
+                this.showContent=content.replaceAll("src=\"upload/","src=\""+this.baseUrl+"upload/");
+            },
+            // 更新 wuyong 使用 Element UI 确认框和 Axios (如果需要保留此功能)
+            // wuyong(id) {
+            //     this.$confirm('确定要执行此操作吗？', '提示', { // 替换 confirm
+            //         confirmButtonText: '确定',
+            //         cancelButtonText: '取消',
+            //         type: 'warning'
+            //     }).then(() => {
+            //         server.post(`jiadianCommentback/update`, { // 使用 server.post
+            //             id:id,
+            //             // jiadianCommentbackTypes:1, // 根据需要设置更新的字段
+            //         }).then(res => {
+            //             if(res.code == 0){
+            //                 this.$message({ type: 'success', message: '操作成功', duration: 1500, onClose: () => {
+            //                     this.fetchDataList(); // 刷新列表
+            //                 }});
+            //             }else{
+            //                 this.$message.error(res.msg);
+            //             }
+            //         }).catch(err => {
+            //              this.$message.error("请求失败");
+            //         });
+            //     }).catch(() => {
+            //         this.$message({ type: 'info', message: '已取消操作' });
+            //     });
+            // },
+            // 更新 deleteData 使用 Element UI 确认框和 Axios
+            deleteData(data){
+                this.$confirm('确定要删除这条数据吗？', '提示', { // 替换 confirm
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 删除信息
+                    server.post(`jiadianCommentback/delete`, [data.id]).then(res => { // 使用 server.post
+                        if(res.code==0){
+                            this.$message({ type: 'success', message: '删除成功', duration: 1500, onClose: () => {
+                                this.fetchDataList(); // 刷新列表
+                            }});
+                        }else{
+                            this.$message.error(res.msg);
+                        }
+                    }).catch(err => {
+                         this.$message.error("请求失败");
+                    });
+                }).catch(() => {
+                     this.$message({ type: 'info', message: '已取消删除' });
+                });
+            },
+            // 获取用户信息
+            getUserInfo() {
+                let table = localStorage.getItem("userTable");
+                if(table){
+                    server.get(`${table}/session`).then(res => { // 使用 server.get
+                        if (res.code === 0) {
+                            this.user = res.data;
+                        }
+                    }); // 错误处理可以根据需要添加
+                }
+            },
+            // 获取数据列表
+            fetchDataList() {
+                const params = {
+                    page: this.currentPage, // 使用 currentPage
+                    limit: this.pageSize,   // 使用 pageSize
+                    sort: this.searchForm.sort,
+                    order: this.searchForm.order,
+                    yonghuId: this.searchForm.yonghuId,
+                    // 添加其他需要的查询参数
+                    jiadianCommentbackText: this.searchForm.jiadianCommentbackText,
+                    replyText: this.searchForm.replyText,
+                };
+                // 打印请求参数，方便调试
+                console.log('Fetching data with params:', params);
+                server.get('jiadianCommentback/list', { params: params }).then(res => { // 使用 server.get
+                    if (res.code === 0) {
+                        this.dataList = res.data.list;
+                        this.total = res.data.total;
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                }).catch(err => {
+                    this.$message.error('获取评价列表失败');
+                });
+            },
+            // 处理每页显示条数变化
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.currentPage = 1; // 切换每页条数时，回到第一页
+                this.fetchDataList();
+            },
+            // 处理当前页变化
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.fetchDataList();
+            },
+            // 提交评论回复 (如果 jiadianCommentbackModal 被使用)
+            // submitJiadianCommentback() {
+                // 实现提交逻辑，例如:
+                // server.post('jiadianCommentback/reply', { id: this.jiadianCommentbackId, replyText: this.jiadianCommentbackContent })
+                //  .then(...)
+                //  .catch(...)
+                //  .finally(() => { this.jiadianCommentbackModal = false; });
+            //     console.warn("submitJiadianCommentback 方法需要实现");
+            //     this.jiadianCommentbackModal = false; // 暂时关闭
+            // }
+        }
+    });
+</script>
+</body>
+</html>

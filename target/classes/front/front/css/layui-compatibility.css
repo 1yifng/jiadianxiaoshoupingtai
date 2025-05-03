@@ -1,0 +1,305 @@
+/**
+ * Layui样式兼容层
+ * 保留Layui常用的样式类名，但使用ElementUI的样式实现
+ */
+
+/* ===== 布局系统 ===== */
+.layui-container {
+    width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.layui-fluid {
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.layui-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -7.5px;
+}
+
+.layui-row:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.layui-col-md1 { width: 8.33333333%; }
+.layui-col-md2 { width: 16.66666667%; }
+.layui-col-md3 { width: 25%; }
+.layui-col-md4 { width: 33.33333333%; }
+.layui-col-md5 { width: 41.66666667%; }
+.layui-col-md6 { width: 50%; }
+.layui-col-md7 { width: 58.33333333%; }
+.layui-col-md8 { width: 66.66666667%; }
+.layui-col-md9 { width: 75%; }
+.layui-col-md10 { width: 83.33333333%; }
+.layui-col-md11 { width: 91.66666667%; }
+.layui-col-md12 { width: 100%; }
+
+/* 列间距 */
+.layui-col-space1 > * { padding: 0.5px; }
+.layui-col-space3 > * { padding: 1.5px; }
+.layui-col-space5 > * { padding: 2.5px; }
+.layui-col-space8 > * { padding: 4px; }
+.layui-col-space10 > * { padding: 5px; }
+.layui-col-space12 > * { padding: 6px; }
+.layui-col-space15 > * { padding: 7.5px; }
+.layui-col-space18 > * { padding: 9px; }
+.layui-col-space20 > * { padding: 10px; }
+.layui-col-space22 > * { padding: 11px; }
+.layui-col-space28 > * { padding: 14px; }
+.layui-col-space30 > * { padding: 15px; }
+
+/* ===== 表单元素 ===== */
+.layui-form {
+    margin: 10px 0;
+}
+
+.layui-form-item {
+    margin-bottom: 15px;
+    clear: both;
+}
+
+.layui-form-label {
+    display: block;
+    padding: 9px 15px;
+    width: 80px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: right;
+    float: left;
+}
+
+.layui-input-block {
+    margin-left: 110px;
+    min-height: 36px;
+}
+
+.layui-input-inline {
+    display: inline-block;
+    vertical-align: middle;
+    width: 190px;
+    margin-right: 10px;
+}
+
+.layui-input, .layui-textarea {
+    display: block;
+    width: 100%;
+    padding-left: 10px;
+    height: 38px;
+    line-height: 1.3;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 2px;
+    border-color: #DCDFE6;
+    background-color: #fff;
+    color: #606266;
+}
+
+.layui-textarea {
+    min-height: 100px;
+    height: auto;
+    line-height: 20px;
+    padding: 6px 10px;
+    resize: vertical;
+}
+
+/* ===== 按钮 ===== */
+.layui-btn {
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #409EFF;
+    transition: .1s;
+}
+
+.layui-btn-primary {
+    color: #606266;
+    background-color: #fff;
+    border: 1px solid #DCDFE6;
+}
+
+.layui-btn-normal {
+    background-color: #1E9FFF;
+}
+
+.layui-btn-warm {
+    background-color: #FFB800;
+}
+
+.layui-btn-danger {
+    background-color: #FF5722;
+}
+
+.layui-btn-disabled {
+    color: #C0C4CC;
+    background-color: #F5F7FA;
+    cursor: not-allowed;
+}
+
+.layui-btn-sm {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+.layui-btn-xs {
+    height: 22px;
+    line-height: 22px;
+    padding: 0 5px;
+    font-size: 12px;
+}
+
+.layui-btn-lg {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 25px;
+    font-size: 16px;
+}
+
+/* ===== 图标 ===== */
+.layui-icon {
+    font-family: 'element-icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: baseline;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.layui-icon-home:before {
+    content: "\e6df"; /* ElementUI的首页图标 */
+}
+
+.layui-icon-username:before {
+    content: "\e66f"; /* ElementUI的用户图标 */
+}
+
+.layui-icon-addition:before {
+    content: "\e6d9"; /* ElementUI的添加图标 */
+}
+
+.layui-icon-email:before {
+    content: "\e629"; /* ElementUI的邮件图标 */
+}
+
+/* ===== 阴影与卡片 ===== */
+.layui-card {
+    margin-bottom: 15px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.layui-card-header {
+    position: relative;
+    height: 42px;
+    line-height: 42px;
+    padding: 0 15px;
+    border-bottom: 1px solid #f6f6f6;
+    color: #333;
+    font-size: 14px;
+}
+
+.layui-card-body {
+    padding: 10px 15px;
+}
+
+/* ===== 表格 ===== */
+.layui-table {
+    width: 100%;
+    margin: 10px 0;
+    background-color: #fff;
+    color: #606266;
+    font-size: 14px;
+    line-height: 24px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.layui-table th {
+    padding: 12px 0;
+    text-align: left;
+    font-weight: 400;
+    border-bottom: 1px solid #EBEEF5;
+    background-color: #FAFAFA;
+    padding-left: 10px;
+}
+
+.layui-table td {
+    padding: 12px 0;
+    border-bottom: 1px solid #EBEEF5;
+    padding-left: 10px;
+}
+
+.layui-table-page {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* ===== 导航 ===== */
+.layui-nav {
+    position: relative;
+    padding: 0 20px;
+    background-color: #23262E;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 0;
+    box-sizing: border-box;
+}
+
+.layui-nav * {
+    font-size: 14px;
+}
+
+.layui-nav .layui-nav-item {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 60px;
+}
+
+.layui-nav .layui-nav-item a {
+    display: block;
+    padding: 0 20px;
+    color: #fff;
+    color: rgba(255,255,255,.7);
+    transition: all .3s;
+    -webkit-transition: all .3s;
+}
+
+.layui-nav .layui-nav-item a:hover, 
+.layui-nav .layui-nav-item a.layui-this {
+    color: #fff;
+}
+
+.layui-nav .layui-this:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    background-color: rgba(255,255,255,.3);
+} 
