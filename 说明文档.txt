@@ -1,7 +1,0 @@
-前台登录页面
-http://localhost:8080/jiadianxiaoshoupingtai/front/index.html
-
-后台登录页面
-http://localhost:8080/jiadianxiaoshoupingtai/admin/dist/index.html
-
-
