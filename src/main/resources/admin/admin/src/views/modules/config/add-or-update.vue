@@ -198,42 +198,6 @@ export default {
   box-shadow: 0 0 6px rgba(0,0,0,0.1);
 }
 
-/* 输入框样式，这里注释掉了，可以根据需要取消注释
-.input >>> .el-input__inner {
-  height: 36px;
-  line-height: 36px;
-  color: #606266;
-  font-size: 14px;
-  border: 1px solid #DCDFE6;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.input >>> .el-form-item__label {
-  color: #606266;
-  font-size: 14px;
-}*/
-
-/* 上传组件样式，这里注释掉了，可以根据需要取消注释
-.upload >>> .el-upload--picture-card {
-  width: 148px;
-  height: 148px;
-  line-height: 146px;
-  border: 1px dashed #DCDFE6;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.upload >>> .el-upload-list--picture-card .el-upload-list__item {
-  width: 148px;
-  height: 148px;
-  border: 1px solid #DCDFE6;
-  border-radius: 4px;
-}
-
-.upload >>> .el-upload-list__item-actions {
-  line-height: 146px;
-}*/
 
 /* 按钮样式 */
 .btn .el-button {

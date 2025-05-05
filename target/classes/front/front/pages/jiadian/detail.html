@@ -144,6 +144,21 @@
             <div v-html="detail.jiadianContent"></div>
         </div>
 
+        <!-- 系统推荐 -->
+        <div class="recommend-container" v-if="jiadianRecommendList.length > 0">
+            <el-divider content-position="left">系统推荐</el-divider>
+            <el-row :gutter="20">
+                <el-col :span="4" v-for="(item, index) in jiadianRecommendList" :key="index">
+                    <el-card :body-style="{ padding: '0px' }" shadow="hover" @click.native="jump('../jiadian/detail.html?id='+item.id)">
+                        <img :src="baseUrl + '/' + item.jiadianPhoto.split(',')[0]" class="image" style="width: 100%; height: 150px; object-fit: cover;">
+                        <div style="padding: 14px;">
+                            <div style="font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{item.jiadianName}}</div>
+                            <div style="color: red; font-size: 16px; margin-top: 5px;">¥{{item.jiadianNewMoney}}</div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
         
         <!-- 评论区域 -->
         <div class="comment-container">
@@ -202,7 +217,7 @@
             detailTable: 'jiadian',
             buyNumber: 1,
             jiadianCommentbackDataList: [],
-            // jiadianRecommendList: [],
+            jiadianRecommendList: [],
             jiadianCommentbackPage: 1,
             jiadianCommentbackLimit: 10,
             jiadianCommentbackTotal: 0,
@@ -224,14 +239,14 @@
                     return;
                 }
 
-                // // 库存限制
-                // if (this.detail.jiadianKucunNumber > 0 && this.detail.jiadianKucunNumber < this.buyNumber) {
-                //     this.$message.error('库存不足');
-                //     return;
-                // }
+                // 库存限制
+                if (this.detail.jiadianKucunNumber > 0 && this.detail.jiadianKucunNumber < this.buyNumber) {
+                    this.$message.error('库存不足');
+                    return;
+                }
 
                 // 查询是否已经添加到购物车
-                server.get('cart/list', {
+                server.get('cart/page', {
                     params: {
                         yonghuId: localStorage.getItem('userid'),
                         jiadianId: this.detail.id,
@@ -409,6 +424,18 @@
                 }
             });
 
+            // 系统推荐
+            server.get('jiadian/gexingtuijian', {
+                params: {
+                    page: 1,
+                    limit: 5,
+                    jiadianTypes: this.detail.jiadianTypes,
+                    jiadianDelete: 1,
+                    shangxiaTypes: 1,
+                }
+            }).then(res => {
+                this.jiadianRecommendList = res.data.list;
+            });
             
             // 检查是否已收藏
             if (localStorage.getItem('userid')) {

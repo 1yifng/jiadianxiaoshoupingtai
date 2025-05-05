@@ -50,40 +50,7 @@ public class CartController {
         return R.ok().put("data", page);
     }
 
-    /**
-     * 后端详情查询
-     * @param id 购物车记录ID，用于唯一标识一条购物车记录
-     * @param request HttpServletRequest对象，可用于获取请求相关信息
-     * @return 封装了购物车详情的响应对象 R，如果未找到则返回错误信息
-     */
-//    @RequestMapping("/info/{id}")
-//    public R info(@PathVariable("id") Long id, HttpServletRequest request) {
-//        // 调用服务层的获取详情方法
-//        CartView view = cartService.getCartInfo(id, request);
-//        if (view != null) {
-//            // 如果找到记录，返回成功响应并将详情数据放入响应中
-//            return R.ok().put("data", view);
-//        } else {
-//            // 如果未找到记录，返回错误响应
-//            return R.error(511, "查不到数据");
-//        }
-//    }
 
-    /**
-     * 后端保存购物车记录
-     * @param cart 购物车实体对象，包含购物车的相关信息
-     * @return 保存结果的响应对象 R，如果保存失败则返回错误信息
-     */
-//    @RequestMapping("/save")
-//    public R save(@RequestBody CartEntity cart) {
-//        if (cartService.saveCart(cart)) {
-//            // 如果保存成功，返回成功响应
-//            return R.ok();
-//        } else {
-//            // 如果保存失败，返回错误响应
-//            return R.error(511, "商品已添加到购物车");
-//        }
-//    }
 
     /**
      * 处理购物车数量变化
@@ -117,47 +84,7 @@ public class CartController {
         }
     }
 
-    /**
-     * 用户购物车列表分页查询：用于检查商品是否已被添加到购物车
-     * @param params 查询参数，yonghuId和jiadianId
-     * @param request HttpServletRequest对象，可用于获取请求相关信息
-     * @return 封装了分页数据的响应对象 R
-     */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params, HttpServletRequest request) {
-        // 检查查询参数是否合法
-        CommonUtil.checkMap(params);
-        // 调用服务层的分页查询方法
-        PageUtils page = cartService.queryPage(params);
 
-        // 获取查询结果列表
-        List<CartView> list = (List<CartView>) page.getList();
-        // 对列表中的每个 CartView 对象进行字典转换
-        for (CartView c : list) {
-            dictionaryService.dictionaryConvert(c, request);
-        }
-        // 返回成功响应，并将分页数据放入响应中
-        return R.ok().put("data", page);
-    }
-
-    /**
-     * 前端详情查询
-     * @param id 购物车记录ID，用于唯一标识一条购物车记录
-     * @param request HttpServletRequest对象，可用于获取请求相关信息
-     * @return 封装了购物车详情的响应对象 R，如果未找到则返回错误信息
-     */
-    @RequestMapping("/detail/{id}")
-    public R detail(@PathVariable("id") Long id, HttpServletRequest request) {
-        // 调用服务层的获取详情方法
-        CartView view = cartService.getCartDetail(id, request);
-        if (view != null) {
-            // 如果找到记录，返回成功响应并将详情数据放入响应中
-            return R.ok().put("data", view);
-        } else {
-            // 如果未找到记录，返回错误响应
-            return R.error(511, "查不到数据");
-        }
-    }
 
     /**
      * 加入购物车

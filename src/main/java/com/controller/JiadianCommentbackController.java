@@ -42,39 +42,14 @@ import com.alibaba.fastjson.*;
 @Controller
 @RequestMapping("/jiadianCommentback")
 public class JiadianCommentbackController {
-    private static final Logger logger = LoggerFactory.getLogger(JiadianCommentbackController.class);
-
-    private static final String TABLE_NAME = "jiadianCommentback";
-
     @Autowired
     private JiadianCommentbackService jiadianCommentbackService;
-
-
-    @Autowired
-    private TokenService tokenService;
-
-    @Autowired
-    private AddressService addressService;//收货地址
-    @Autowired
-    private CartService cartService;//购物车
     @Autowired
     private DictionaryService dictionaryService;//字典
     @Autowired
-    private ForumService forumService;//论坛
-    @Autowired
     private JiadianService jiadianService;//商品
     @Autowired
-    private JiadianCollectionService jiadianCollectionService;//商品收藏
-    @Autowired
-    private JiadianOrderService jiadianOrderService;//商品订单
-    @Autowired
-    private LiuyanService liuyanService;//留言反馈
-    @Autowired
-    private NewsService newsService;//公告信息
-    @Autowired
     private YonghuService yonghuService;//用户
-    @Autowired
-    private UsersService usersService;//管理员
 
 
     /**
@@ -82,11 +57,8 @@ public class JiadianCommentbackController {
     */
     @RequestMapping("/page")
     public R page(@RequestParam Map<String, Object> params, HttpServletRequest request){
-        logger.debug("page方法:,,Controller:{},,params:{}",this.getClass().getName(),JSONObject.toJSONString(params));
         String role = String.valueOf(request.getSession().getAttribute("role"));
-        if(false)
-            return R.error(511,"永不会进入");
-        else if("用户".equals(role))
+        if("用户".equals(role))
             params.put("yonghuId",request.getSession().getAttribute("userId"));
         CommonUtil.checkMap(params);
         PageUtils page = jiadianCommentbackService.queryPage(params);
@@ -105,7 +77,6 @@ public class JiadianCommentbackController {
     */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id, HttpServletRequest request){
-        logger.debug("info方法:,,Controller:{},,id:{}",this.getClass().getName(),id);
         JiadianCommentbackEntity jiadianCommentback = jiadianCommentbackService.selectById(id);
         if(jiadianCommentback !=null){
             //entity转view
@@ -139,12 +110,8 @@ public class JiadianCommentbackController {
     */
     @RequestMapping("/save")
     public R save(@RequestBody JiadianCommentbackEntity jiadianCommentback, HttpServletRequest request){
-        logger.debug("save方法:,,Controller:{},,jiadianCommentback:{}",this.getClass().getName(),jiadianCommentback.toString());
-
         String role = String.valueOf(request.getSession().getAttribute("role"));
-        if(false)
-            return R.error(511,"永远不会进入");
-        else if("用户".equals(role))
+        if("用户".equals(role))
             jiadianCommentback.setYonghuId(Integer.valueOf(String.valueOf(request.getSession().getAttribute("userId"))));
 
         jiadianCommentback.setCreateTime(new Date());
@@ -158,19 +125,10 @@ public class JiadianCommentbackController {
     * 后端修改
     */
     @RequestMapping("/update")
-    public R update(@RequestBody JiadianCommentbackEntity jiadianCommentback, HttpServletRequest request) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        logger.debug("update方法:,,Controller:{},,jiadianCommentback:{}",this.getClass().getName(),jiadianCommentback.toString());
-        JiadianCommentbackEntity oldJiadianCommentbackEntity = jiadianCommentbackService.selectById(jiadianCommentback.getId());//查询原先数据
-
-        String role = String.valueOf(request.getSession().getAttribute("role"));
-//        if(false)
-//            return R.error(511,"永远不会进入");
-//        else if("用户".equals(role))
-//            jiadianCommentback.setYonghuId(Integer.valueOf(String.valueOf(request.getSession().getAttribute("userId"))));
+    public R update(@RequestBody JiadianCommentbackEntity jiadianCommentback)  {
         jiadianCommentback.setUpdateTime(new Date());
-
-            jiadianCommentbackService.updateById(jiadianCommentback);//根据id更新
-            return R.ok();
+        jiadianCommentbackService.updateById(jiadianCommentback);//根据id更新
+        return R.ok();
     }
 
 
@@ -179,9 +137,7 @@ public class JiadianCommentbackController {
     * 删除
     */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Integer[] ids, HttpServletRequest request){
-        logger.debug("delete:,,Controller:{},,ids:{}",this.getClass().getName(),ids.toString());
-        List<JiadianCommentbackEntity> oldJiadianCommentbackList =jiadianCommentbackService.selectBatchIds(Arrays.asList(ids));//要删除的数据
+    public R delete(@RequestBody Integer[] ids){
         jiadianCommentbackService.deleteBatchIds(Arrays.asList(ids));
 
         return R.ok();
@@ -194,7 +150,6 @@ public class JiadianCommentbackController {
     @IgnoreAuth
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params, HttpServletRequest request){
-        logger.debug("list方法:,,Controller:{},,params:{}",this.getClass().getName(),JSONObject.toJSONString(params));
 
         CommonUtil.checkMap(params);
         PageUtils page = jiadianCommentbackService.queryPage(params);
@@ -212,10 +167,8 @@ public class JiadianCommentbackController {
     */
     @RequestMapping("/detail/{id}")
     public R detail(@PathVariable("id") Long id, HttpServletRequest request){
-        logger.debug("detail方法:,,Controller:{},,id:{}",this.getClass().getName(),id);
         JiadianCommentbackEntity jiadianCommentback = jiadianCommentbackService.selectById(id);
             if(jiadianCommentback !=null){
-
 
                 //entity转view
                 JiadianCommentbackView view = new JiadianCommentbackView();
@@ -246,8 +199,7 @@ public class JiadianCommentbackController {
     * 前端保存
     */
     @RequestMapping("/add")
-    public R add(@RequestBody JiadianCommentbackEntity jiadianCommentback, HttpServletRequest request){
-        logger.debug("add方法:,,Controller:{},,jiadianCommentback:{}",this.getClass().getName(),jiadianCommentback.toString());
+    public R add(@RequestBody JiadianCommentbackEntity jiadianCommentback){
         jiadianCommentback.setCreateTime(new Date());
         jiadianCommentback.setInsertTime(new Date());
         jiadianCommentbackService.insert(jiadianCommentback);

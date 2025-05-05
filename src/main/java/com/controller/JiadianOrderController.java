@@ -42,17 +42,9 @@ import com.alibaba.fastjson.*;
 @Controller
 @RequestMapping("/jiadianOrder")
 public class JiadianOrderController {
-    private static final Logger logger = LoggerFactory.getLogger(JiadianOrderController.class);
-
-    private static final String TABLE_NAME = "jiadianOrder";
 
     @Autowired
     private JiadianOrderService jiadianOrderService;
-
-
-    @Autowired
-    private TokenService tokenService;
-
     @Autowired
     private AddressService addressService;//收货地址
     @Autowired
@@ -60,21 +52,11 @@ public class JiadianOrderController {
     @Autowired
     private DictionaryService dictionaryService;//字典
     @Autowired
-    private ForumService forumService;//论坛
-    @Autowired
     private JiadianService jiadianService;//商品
-    @Autowired
-    private JiadianCollectionService jiadianCollectionService;//商品收藏
     @Autowired
     private JiadianCommentbackService jiadianCommentbackService;//商品评价
     @Autowired
-    private LiuyanService liuyanService;//留言反馈
-    @Autowired
-    private NewsService newsService;//公告信息
-    @Autowired
     private YonghuService yonghuService;//用户
-    @Autowired
-    private UsersService usersService;//管理员
 
 
     /**
@@ -142,12 +124,9 @@ public class JiadianOrderController {
     */
     @RequestMapping("/save")
     public R save(@RequestBody JiadianOrderEntity jiadianOrder, HttpServletRequest request){
-        logger.debug("save方法:,,Controller:{},,jiadianOrder:{}",this.getClass().getName(),jiadianOrder.toString());
 
         String role = String.valueOf(request.getSession().getAttribute("role"));
-        if(false)
-            return R.error(511,"永远不会进入");
-        else if("用户".equals(role))
+        if("用户".equals(role))
             jiadianOrder.setYonghuId(Integer.valueOf(String.valueOf(request.getSession().getAttribute("userId"))));
 
         jiadianOrder.setCreateTime(new Date());
@@ -161,7 +140,7 @@ public class JiadianOrderController {
     * 后端修改
     */
     @RequestMapping("/update")
-    public R update(@RequestBody JiadianOrderEntity jiadianOrder) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public R update(@RequestBody JiadianOrderEntity jiadianOrder) {
             jiadianOrderService.updateById(jiadianOrder);//根据id更新
             return R.ok();
     }
@@ -238,14 +217,11 @@ public class JiadianOrderController {
     */
     @RequestMapping("/add")
     public R add(@RequestBody JiadianOrderEntity jiadianOrder, HttpServletRequest request){
-        logger.debug("add方法:,,Controller:{},,jiadianOrder:{}",this.getClass().getName(),jiadianOrder.toString());
             JiadianEntity jiadianEntity = jiadianService.selectById(jiadianOrder.getJiadianId());
             if(jiadianEntity == null){
                 return R.error(511,"查不到该商品");
             }
 
-            if(false){
-            }
             else if(jiadianEntity.getJiadianNewMoney() == null){
                 return R.error(511,"现价不能为空");
             }
@@ -284,14 +260,12 @@ public class JiadianOrderController {
      */
     @RequestMapping("/order")
     public R add(@RequestParam Map<String, Object> params, HttpServletRequest request){
-        logger.debug("order方法:,,Controller:{},,params:{}",this.getClass().getName(),params.toString());
         String jiadianOrderUuidNumber = String.valueOf(new Date().getTime());
 
         //获取当前登录用户的id
         Integer userId = (Integer) request.getSession().getAttribute("userId");
         Integer addressId = Integer.valueOf(String.valueOf(params.get("addressId")));
-
-            Integer jiadianOrderPaymentTypes = Integer.valueOf(String.valueOf(params.get("jiadianOrderPaymentTypes")));//支付类型
+        Integer jiadianOrderPaymentTypes = Integer.valueOf(String.valueOf(params.get("jiadianOrderPaymentTypes")));//支付类型
 
         String data = String.valueOf(params.get("jiadians"));
         JSONArray jsonArray = JSON.parseArray(data);
@@ -335,8 +309,8 @@ public class JiadianOrderController {
             jiadianOrderEntity.setJiadianOrderUuidNumber(jiadianOrderUuidNumber);//订单号
             jiadianOrderEntity.setAddressId(addressId);//收货地址
             jiadianOrderEntity.setJiadianId(jiadianId);//商品
-                        jiadianOrderEntity.setYonghuId(userId);//用户
-            jiadianOrderEntity.setBuyNumber(buyNumber);//购买数量 ？？？？？？
+            jiadianOrderEntity.setYonghuId(userId);//用户
+            jiadianOrderEntity.setBuyNumber(buyNumber);//购买数量
             jiadianOrderEntity.setJiadianOrderTypes(101);//订单类型
             jiadianOrderEntity.setJiadianOrderPaymentTypes(jiadianOrderPaymentTypes);//支付类型
             jiadianOrderEntity.setInsertTime(new Date());//订单创建时间
@@ -379,7 +353,6 @@ public class JiadianOrderController {
      */
     @RequestMapping("/refund")
     public R refund(Integer id, HttpServletRequest request) {
-        logger.debug("refund方法:,,Controller:{},,id:{}", this.getClass().getName(), id);
         try {
             // 1. 查询订单信息
             JiadianOrderEntity jiadianOrder = jiadianOrderService.selectById(id);
@@ -429,7 +402,6 @@ public class JiadianOrderController {
             jiadianService.updateById(jiadianEntity);
             return R.ok().put("msg", "退款成功");
         } catch (Exception e) {
-            logger.error("退款处理异常", e);
             return R.error("退款处理失败，请联系管理员");
         }
     }
@@ -438,8 +410,8 @@ public class JiadianOrderController {
     * 用户评价
     */
     @RequestMapping("/commentback")
-    public R commentback(Integer id, String commentbackText, Integer jiadianCommentbackPingfenNumber, HttpServletRequest request){
-        logger.debug("commentback方法:,,Controller:{},,id:{}",this.getClass().getName(),id);
+    public R commentback(Integer id, String commentbackText, HttpServletRequest request){
+
             JiadianOrderEntity jiadianOrder = jiadianOrderService.selectById(id);
         if(jiadianOrder == null)
             return R.error(511,"查不到该订单");
@@ -467,8 +439,7 @@ public class JiadianOrderController {
      * 管理员发货
      */
     @RequestMapping("/deliver")
-    public R deliver(Integer id ,String jiadianOrderCourierNumber, String jiadianOrderCourierName , HttpServletRequest request){
-        logger.debug("refund:,,Controller:{},,ids:{}",this.getClass().getName(),id.toString());
+    public R deliver(Integer id ,String jiadianOrderCourierNumber, String jiadianOrderCourierName ){
         JiadianOrderEntity  jiadianOrderEntity = jiadianOrderService.selectById(id);
         jiadianOrderEntity.setJiadianOrderTypes(103);//设置订单状态为已发货
         jiadianOrderEntity.setJiadianOrderCourierNumber(jiadianOrderCourierNumber);

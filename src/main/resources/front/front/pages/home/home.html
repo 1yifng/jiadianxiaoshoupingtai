@@ -323,7 +323,7 @@
     new WOW().init();
 
     Vue.prototype.myFilters = function (msg) {
-        if(msg==null || msg==""){
+        if(msg==null || msg===""){
             return "";
         }else if (msg.length>20){
             msg.replace(/\n/g, "<br>");
@@ -393,7 +393,7 @@
         vue.baseUrl = http.baseurl
 
         // 获取轮播图 数据
-        http.request('config/list', 'get', {
+        http.request('config/page', 'get', {
             page: 1,
             limit: 5
         }, function (res) {
