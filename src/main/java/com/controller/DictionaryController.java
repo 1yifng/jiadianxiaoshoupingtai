@@ -87,11 +87,6 @@ public class DictionaryController {
     */
     @RequestMapping("/save")
     public R save(@RequestBody DictionaryEntity dictionary, HttpServletRequest request){
-
-//        String role = String.valueOf(request.getSession().getAttribute("role"));
-//        if(false)
-//            return R.error(511,"永远不会进入");
-
         Wrapper<DictionaryEntity> queryWrapper = new EntityWrapper<DictionaryEntity>()
             .eq("dic_code", dictionary.getDicCode())
             .eq("index_name", dictionary.getIndexName())
@@ -127,14 +122,7 @@ public class DictionaryController {
     * 后端修改
     */
     @RequestMapping("/update")
-    public R update(@RequestBody DictionaryEntity dictionary, HttpServletRequest request) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-
-//        DictionaryEntity oldDictionaryEntity = dictionaryService.selectById(dictionary.getId());//查询原先数据
-//
-//        String role = String.valueOf(request.getSession().getAttribute("role"));
-//     if(false)
-//            return R.error(511,"永远不会进入");
-
+    public R update(@RequestBody DictionaryEntity dictionary, HttpServletRequest request)  {
             dictionaryService.updateById(dictionary);//根据id更新
             //如果字典表修改数据的话,把数据再重新查出,放入监听器中
             List<DictionaryEntity> dictionaryEntities = dictionaryService.selectList(new EntityWrapper<DictionaryEntity>());
@@ -181,64 +169,5 @@ public class DictionaryController {
             return R.ok().put("maxCodeIndex",1);
         }
     }
-
-//    /**
-//     * 批量上传
-//     */
-//    @RequestMapping("/batchInsert")
-//    public R save( String fileName, HttpServletRequest request){
-//        logger.debug("batchInsert方法:,,Controller:{},,fileName:{}",this.getClass().getName(),fileName);
-//        Integer yonghuId = Integer.valueOf(String.valueOf(request.getSession().getAttribute("userId")));
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        try {
-//            List<DictionaryEntity> dictionaryList = new ArrayList<>();//上传的东西
-//            Map<String, List<String>> seachFields= new HashMap<>();//要查询的字段
-//            Date date = new Date();
-//            int lastIndexOf = fileName.lastIndexOf(".");
-//            if(lastIndexOf == -1){
-//                return R.error(511,"该文件没有后缀");
-//            }else{
-//                String suffix = fileName.substring(lastIndexOf);
-//                if(!".xls".equals(suffix)){
-//                    return R.error(511,"只支持后缀为xls的excel文件");
-//                }else{
-//                    URL resource = this.getClass().getClassLoader().getResource("static/upload/" + fileName);//获取文件路径
-//                    File file = new File(resource.getFile());
-//                    if(!file.exists()){
-//                        return R.error(511,"找不到上传文件，请联系管理员");
-//                    }else{
-//                        List<List<String>> dataList = PoiUtil.poiImport(file.getPath());//读取xls文件
-//                        dataList.remove(0);//删除第一行，因为第一行是提示
-//                        for(List<String> data:dataList){
-//                            //循环
-//                            DictionaryEntity dictionaryEntity = new DictionaryEntity();
-////                            dictionaryEntity.setDicCode(data.get(0));                    //字段 要改的
-////                            dictionaryEntity.setDicName(data.get(0));                    //字段名 要改的
-////                            dictionaryEntity.setCodeIndex(Integer.valueOf(data.get(0)));   //编码 要改的
-////                            dictionaryEntity.setIndexName(data.get(0));                    //编码名字 要改的
-////                            dictionaryEntity.setSuperId(Integer.valueOf(data.get(0)));   //父字段id 要改的
-////                            dictionaryEntity.setBeizhu(data.get(0));                    //备注 要改的
-////                            dictionaryEntity.setCreateTime(date);//时间
-//                            dictionaryList.add(dictionaryEntity);
-//
-//
-//                            //把要查询是否重复的字段放入map中
-//                        }
-//
-//                        //查询是否重复
-//                        dictionaryService.insertBatch(dictionaryList);
-//                        return R.ok();
-//                    }
-//                }
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return R.error(511,"批量插入数据异常，请联系管理员");
-//        }
-//    }
-
-
-
-
 }
 

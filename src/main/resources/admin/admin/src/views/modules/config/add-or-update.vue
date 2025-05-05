@@ -91,7 +91,10 @@ export default {
           // 名称字段验证规则，不能为空
           { required: true, message: '名称不能为空', trigger: 'blur' },
         ],
-        value: [], // 图片字段的验证规则，这里为空
+        // 图片字段的验证规则，不能为空
+        value: [
+          { required: true,message:'图片不能为空',trigger:'change'},
+        ],
       }
     };
   },

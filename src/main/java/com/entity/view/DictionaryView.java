@@ -1,16 +1,10 @@
 package com.entity.view;
 
-import org.apache.tools.ant.util.DateUtils;
-import com.annotation.ColumnInfo;
 import com.entity.DictionaryEntity;
 import com.baomidou.mybatisplus.annotations.TableName;
 import org.apache.commons.beanutils.BeanUtils;
 import java.lang.reflect.InvocationTargetException;
-import org.springframework.format.annotation.DateTimeFormat;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
-import java.util.Date;
-import com.utils.DateUtil;
 
 /**
 * 字典
@@ -22,10 +16,6 @@ public class DictionaryView extends DictionaryEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	//当前表
-
-
-
-
 	public DictionaryView() {
 
 	}
