@@ -27,13 +27,11 @@
         <el-row class="action-row">
           <el-form-item>
             <el-button
-                v-if="isAuth('dictionaryNews','新增')"
                 type="success"
                 icon="el-icon-plus"
                 @click="addOrUpdateHandler()"
             >新增</el-button>
             <el-button
-                v-if="isAuth('dictionaryNews','删除')"
                 :disabled="dataListSelections.length <= 0"
                 type="danger"
                 icon="el-icon-delete"
@@ -54,7 +52,6 @@
             border
             fit
             size="medium"
-            v-if="isAuth('dictionaryNews','查看')"
         >
           <!-- 选择列 -->
           <el-table-column

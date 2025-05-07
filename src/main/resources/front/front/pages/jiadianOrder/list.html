@@ -309,9 +309,7 @@
                         <el-button v-if="item.jiadianOrderTypes==103" @click="receiving(item.id)" type="warning" size="small" round>
                             <i class="el-icon-check"></i> 收货
                         </el-button>
-                        <!--                        <button v-if="item.jiadianOrderTypes==1 && false" @click="wuyong(item.id)" type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">-->
-<!--                            无用按钮-->
-<!--                        </button>-->
+
                     </div>
                 </div>
             </div>
@@ -414,9 +412,7 @@
                 return '';
             }
         },
-        // 计算属性（目前为空）
-        computed: {
-        },
+
         // 生命周期钩子函数，在组件挂载完成后执行
         mounted() {
             // 设置 localStorage 中的跳转地址

@@ -160,7 +160,7 @@
 
 <script type="text/javascript">
     Vue.prototype.myFilters = function (msg) {
-        if(msg==null || msg==""){
+        if(msg==null || msg===""){
             return "";
         }else if (msg.length>20){
             msg.replace(/\n/g, "<br>");

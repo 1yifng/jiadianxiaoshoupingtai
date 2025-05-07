@@ -1,16 +1,27 @@
 package com.service.impl;
 
-import org.springframework.stereotype.Service;
-import java.util.*;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import org.springframework.transaction.annotation.Transactional;
+import com.dao.JiadianCommentbackDao;
+import com.dao.JiadianDao;
+import com.dao.YonghuDao;
+import com.entity.JiadianCommentbackEntity;
+import com.entity.JiadianEntity;
+import com.entity.JiadianOrderEntity;
+import com.entity.YonghuEntity;
+import com.entity.view.JiadianCommentbackView;
+import com.service.*;
 import com.utils.PageUtils;
 import com.utils.Query;
-import com.dao.JiadianCommentbackDao;
-import com.entity.JiadianCommentbackEntity;
-import com.service.JiadianCommentbackService;
-import com.entity.view.JiadianCommentbackView;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品评价 服务实现类
@@ -19,12 +30,138 @@ import com.entity.view.JiadianCommentbackView;
 @Transactional
 public class JiadianCommentbackServiceImpl extends ServiceImpl<JiadianCommentbackDao, JiadianCommentbackEntity> implements JiadianCommentbackService {
 
+    @Autowired
+    private DictionaryService dictionaryService;
+    @Autowired
+    private JiadianService jiadianService;
+    @Autowired
+    private YonghuService yonghuService;
+    @Autowired
+    private JiadianOrderService jiadianOrderService;
+
     @Override
-    public PageUtils queryPage(Map<String,Object> params) {
-        Page<JiadianCommentbackView> page =new Query<JiadianCommentbackView>(params).getPage();
-        page.setRecords(baseMapper.selectListView(page,params));
+    public PageUtils queryPage(Map<String, Object> params) {
+        Page<JiadianCommentbackView> page = new Query<JiadianCommentbackView>(params).getPage();
+        page.setRecords(baseMapper.selectListView(page, params));
         return new PageUtils(page);
     }
 
+    @Override
+    public PageUtils handleBackendPage(Map<String, Object> params, HttpServletRequest request) {
+        String role = String.valueOf(request.getSession().getAttribute("role"));
+        if ("用户".equals(role)) {
+            params.put("yonghuId", request.getSession().getAttribute("userId"));
+        }
+        PageUtils page = queryPage(params);
+
+        // 字典表数据转换
+        List<JiadianCommentbackView> list = (List<JiadianCommentbackView>) page.getList();
+        for (JiadianCommentbackView c : list) {
+            // 修改对应字典表字段
+            dictionaryService.dictionaryConvert(c, request);
+        }
+        return page;
+    }
+
+    @Override
+    public JiadianCommentbackView handleBackendInfo(Long id, HttpServletRequest request) {
+        JiadianCommentbackEntity jiadianCommentback = selectById(id);
+        if (jiadianCommentback != null) {
+            // entity转view
+            JiadianCommentbackView view = new JiadianCommentbackView();
+            BeanUtils.copyProperties(jiadianCommentback, view); // 把实体数据重构到view中
+            // 级联表 商品
+            JiadianEntity jiadian = jiadianService.selectById(jiadianCommentback.getJiadianId());
+            if (jiadian != null) {
+                BeanUtils.copyProperties(jiadian, view, new String[]{"id", "createTime", "insertTime", "updateTime", "yonghuId"}); // 把级联的数据添加到view中,并排除id和创建时间字段,当前表的级联注册表
+                view.setJiadianId(jiadian.getId());
+            }
+            // 级联表 用户
+            YonghuEntity yonghu = yonghuService.selectById(jiadianCommentback.getYonghuId());
+            if (yonghu != null) {
+                BeanUtils.copyProperties(yonghu, view, new String[]{"id", "createTime", "insertTime", "updateTime", "yonghuId"}); // 把级联的数据添加到view中,并排除id和创建时间字段,当前表的级联注册表
+                view.setYonghuId(yonghu.getId());
+            }
+            // 修改对应字典表字段
+            dictionaryService.dictionaryConvert(view, request);
+            return view;
+        }
+        return null;
+    }
+
+    @Override
+    public void handleBackendSave(JiadianCommentbackEntity jiadianCommentback, HttpServletRequest request) {
+        String role = String.valueOf(request.getSession().getAttribute("role"));
+        if ("用户".equals(role)) {
+            jiadianCommentback.setYonghuId(Integer.valueOf(String.valueOf(request.getSession().getAttribute("userId"))));
+        }
+        jiadianCommentback.setCreateTime(new Date());
+        jiadianCommentback.setInsertTime(new Date());
+        insert(jiadianCommentback);
+    }
+
+    @Override
+    public void handleBackendUpdate(JiadianCommentbackEntity jiadianCommentback) {
+        jiadianCommentback.setUpdateTime(new Date());
+        updateById(jiadianCommentback); // 根据id更新
+    }
+
+    @Override
+    public void deleteCommentAndUpdateOrderType(Long commentId, Long orderId) {
+        // 删除评价
+        deleteById(commentId);
+
+        // 更新订单类型为 104（已收货）
+        JiadianOrderEntity order = jiadianOrderService.selectById(orderId);
+        if (order != null) {
+            order.setJiadianOrderTypes(104);
+            jiadianOrderService.updateById(order);
+        }
+    }
+
+    @Override
+    public PageUtils handleFrontendList(Map<String, Object> params, HttpServletRequest request) {
+        PageUtils page = queryPage(params);
+
+        // 字典表数据转换
+        List<JiadianCommentbackView> list = (List<JiadianCommentbackView>) page.getList();
+        for (JiadianCommentbackView c : list) {
+            dictionaryService.dictionaryConvert(c, request); // 修改对应字典表字段
+        }
+        return page;
+    }
+
+//    @Override
+//    public JiadianCommentbackView handleFrontendDetail(Long id, HttpServletRequest request) {
+//        JiadianCommentbackEntity jiadianCommentback = selectById(id);
+//        if (jiadianCommentback != null) {
+//            // entity转view
+//            JiadianCommentbackView view = new JiadianCommentbackView();
+//            BeanUtils.copyProperties(jiadianCommentback, view); // 把实体数据重构到view中
+//            // 级联表
+//            JiadianEntity jiadian = jiadianService.selectById(jiadianCommentback.getJiadianId());
+//            if (jiadian != null) {
+//                BeanUtils.copyProperties(jiadian, view, new String[]{"id", "createDate"}); // 把级联的数据添加到view中,并排除id和创建时间字段
+//                view.setJiadianId(jiadian.getId());
+//            }
+//            // 级联表
+//            YonghuEntity yonghu = yonghuService.selectById(jiadianCommentback.getYonghuId());
+//            if (yonghu != null) {
+//                BeanUtils.copyProperties(yonghu, view, new String[]{"id", "createDate"}); // 把级联的数据添加到view中,并排除id和创建时间字段
+//                view.setYonghuId(yonghu.getId());
+//            }
+//            // 修改对应字典表字段
+//            dictionaryService.dictionaryConvert(view, request);
+//            return view;
+//        }
+//        return null;
+//    }
+
+//    @Override
+//    public void handleFrontendSave(JiadianCommentbackEntity jiadianCommentback) {
+//        jiadianCommentback.setCreateTime(new Date());
+//        jiadianCommentback.setInsertTime(new Date());
+//        insert(jiadianCommentback);
+//    }
 
 }

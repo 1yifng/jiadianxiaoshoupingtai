@@ -56,55 +56,6 @@
                 @click="deleteHandler()">
               删除
             </el-button>
-<!--            &nbsp;-->
-<!--            &lt;!&ndash; 报表按钮 &ndash;&gt;-->
-<!--            <el-button-->
-<!--                v-if="isAuth('jiadianCommentback','报表')"-->
-<!--                type="success"-->
-<!--                icon="el-icon-pie-chart"-->
-<!--                @click="chartDialog()">-->
-<!--              报表-->
-<!--            </el-button>-->
-<!--            &nbsp;-->
-<!--            &lt;!&ndash; 导入模板按钮 &ndash;&gt;-->
-<!--            <a-->
-<!--                style="text-decoration:none"-->
-<!--                class="el-button el-button&#45;&#45;success"-->
-<!--                v-if="isAuth('jiadianCommentback','导入导出')"-->
-<!--                icon="el-icon-download"-->
-<!--                href="http://localhost:8080/jiadianxiaoshoupingtai/upload/jiadianCommentbackMuBan.xls">-->
-<!--              批量导入商品评价数据模板-->
-<!--            </a>-->
-<!--            &nbsp;-->
-<!--            &lt;!&ndash; 导入数据按钮 &ndash;&gt;-->
-<!--            <el-upload-->
-<!--                v-if="isAuth('jiadianCommentback','导入导出')"-->
-<!--                style="display: inline-block"-->
-<!--                :action="getActionUrl"-->
-<!--                :on-success="jiadianCommentbackUploadSuccess"-->
-<!--                :on-error="jiadianCommentbackUploadError"-->
-<!--                :show-file-list="false">-->
-<!--              <el-button-->
-<!--                  type="success"-->
-<!--                  icon="el-icon-upload2">-->
-<!--                批量导入商品评价数据-->
-<!--              </el-button>-->
-<!--            </el-upload>-->
-<!--            &nbsp;-->
-<!--            &lt;!&ndash; 导出按钮 &ndash;&gt;-->
-<!--            <download-excel-->
-<!--                v-if="isAuth('jiadianCommentback','导入导出')"-->
-<!--                style="display: inline-block"-->
-<!--                class="export-excel-wrapper"-->
-<!--                :data="dataList"-->
-<!--                :fields="json_fields"-->
-<!--                name="jiadianCommentback.xls">-->
-<!--              <el-button-->
-<!--                  type="success"-->
-<!--                  icon="el-icon-download">-->
-<!--                导出-->
-<!--              </el-button>-->
-<!--            </download-excel>-->
           </el-form-item>
         </el-row>
       </el-form>

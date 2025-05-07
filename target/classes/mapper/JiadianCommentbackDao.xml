@@ -164,7 +164,15 @@
                 <![CDATA[  and yonghu.new_money <= #{params.newMoneyEnd}   ]]>
             </if>
         </where>
-        order by a.${params.sort} ${params.order}
+        order by
+        <choose>
+            <when test="params.sort != null and params.sort != ''">
+                a.${params.sort} ${params.order}
+            </when>
+            <otherwise>
+                a.id desc
+            </otherwise>
+        </choose>
     </select>
 
 </mapper>

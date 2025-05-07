@@ -40,6 +40,7 @@
             <ul>
                 <li class='current'><a href="javascript:navPage('./pages/home/home.html')" class="menumain"><i
                         v-if="false" class="el-icon-s-home"></i>首页</a></li>
+<!--                indexNav是由导入的config.js中的indexnav决定的-->
                 <li v-for="(item,index) in indexNav" v-bind:key="index"><a
                         :href="'javascript:navPage(\''+item.url+'\')'" class="menumain" style="cursor: pointer;"><i
                         v-if="false" class="el-icon" :class="iconArr[index]"></i>{{item.name}}</a></li>
@@ -117,29 +118,7 @@
         document.getElementById('iframe').src = vue.url;
     })();
 
-    // 使用Element UI的对话框替代layer
-    function chatTap(){
-        var userTable = localStorage.getItem('userTable');
-        if (userTable) {
-            // 使用Element UI的对话框
-            const h = this.$createElement;
-            const iframe = document.createElement('iframe');
-            iframe.src = './pages/chat/list.html';
-            iframe.width = '100%';
-            iframe.height = '550px';
-            iframe.frameBorder = '0';
-            
-            ELEMENT.MessageBox({
-                title: '客服',
-                message: h('div', null, [iframe]),
-                showCancelButton: false,
-                confirmButtonText: '关闭',
-                customClass: 'el-message-box--large'
-            });
-        } else {
-            window.location.href = './pages/login/login.html'
-        }
-    }
+
 
     // 导航栏跳转
     function navPage(url) {

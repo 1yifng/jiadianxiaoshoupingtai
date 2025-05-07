@@ -309,9 +309,7 @@
                         <el-button v-if="item.jiadianOrderTypes==103" @click="receiving(item.id)" type="warning" size="small" round>
                             <i class="el-icon-check"></i> 收货
                         </el-button>
-                        <!--                        <button v-if="item.jiadianOrderTypes==1 && false" @click="wuyong(item.id)" type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">-->
-<!--                            无用按钮-->
-<!--                        </button>-->
+
                     </div>
                 </div>
             </div>
@@ -414,9 +412,7 @@
                 return '';
             }
         },
-        // 计算属性（目前为空）
-        computed: {
-        },
+
         // 生命周期钩子函数，在组件挂载完成后执行
         mounted() {
             // 设置 localStorage 中的跳转地址
@@ -441,38 +437,6 @@
                 // 替换内容中的图片路径为完整路径
                 this.showContent = content.replaceAll("src=\"upload/", "src=\"" + this.baseUrl + "upload/");
             },
-            // 执行“无用”操作的方法（具体功能需根据实际需求确定）
-            // wuyong(id) {
-                // 使用 Element UI 的确认框
-            //     this.$confirm('确定要执行此操作吗？', '提示', {
-            //         confirmButtonText: '确定',
-            //         cancelButtonText: '取消',
-            //         type: 'warning'
-            //     }).then(() => {
-            //         // 使用 server.post 发送请求更新数据
-            //         server.post(`jiadianOrder/update`, {
-            //             id: id,
-            //             // jiadianOrderTypes:1, // 根据需要设置更新的字段
-            //         }).then(res => {
-            //             // 如果请求成功
-            //             if (res.code == 0) {
-            //                 // 显示成功消息并刷新数据列表
-            //                 this.$message({ type:'success', message: '操作成功', duration: 1500, onClose: () => {
-            //                         this.fetchDataList();
-            //                     }});
-            //             } else {
-            //                 // 如果请求失败，显示错误消息
-            //                 this.$message.error(res.msg);
-            //             }
-            //         }).catch(err => {
-            //             // 如果请求出错，显示错误消息
-            //             this.$message.error("请求失败");
-            //         });
-            //     }).catch(() => {
-            //         // 如果用户取消操作，显示提示消息
-            //         this.$message({ type: 'info', message: '已取消操作' });
-            //     });
-            // },
             // 删除数据的方法
             deleteData(data) {
                 // 使用 Element UI 的确认框
