@@ -49,11 +49,10 @@ public interface JiadianCommentbackService extends IService<JiadianCommentbackEn
     void handleBackendUpdate(JiadianCommentbackEntity jiadianCommentback);
 
     /**
-     * 删除评价并更新订单类型
-     * @param commentId 评价ID
-     * @param orderId 订单ID
+     * 删除评价并更新订单状态为"已收货"
+     * @param ids 评价ID数组
      */
-    void deleteCommentAndUpdateOrderType(Long commentId, Long orderId);
+    void deleteAndUpdateOrderStatus(Integer[] ids);
 
     /**
      * 处理前端列表业务逻辑
@@ -63,17 +62,5 @@ public interface JiadianCommentbackService extends IService<JiadianCommentbackEn
      */
     PageUtils handleFrontendList(Map<String, Object> params, HttpServletRequest request);
 
-    /**
-     * 处理前端详情业务逻辑
-     * @param id 评价ID
-     * @param request HttpServletRequest
-     * @return 评价详情
-     */
-//    JiadianCommentbackView handleFrontendDetail(Long id, HttpServletRequest request);
 
-    /**
-     * 处理前端保存业务逻辑
-     * @param jiadianCommentback 商品评价实体
-     */
-//    void handleFrontendSave(JiadianCommentbackEntity jiadianCommentback);
 }

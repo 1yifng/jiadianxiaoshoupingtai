@@ -93,9 +93,14 @@
             <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
                 <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
             </if>
-
+            <if test="params.sort != null and params.sort != ''">
+                ORDER BY a.${params.sort} ${params.order}
+            </if>
+            <if test="params.sort == null or params.sort == ''">
+                ORDER BY a.id DESC
+            </if>
         </where>
-        order by a.${params.sort} ${params.order}
+
     </select>
 
 </mapper>

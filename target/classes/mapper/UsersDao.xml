@@ -6,6 +6,12 @@
     <select id="selectListView"
 		resultType="com.entity.UsersEntity" >
 
+-- 		where：MyBatis 提供的一个标签，用于处理 SQL 语句中的 WHERE 子句。它会自动处理 WHERE 子句中的多余 AND 或 OR 关键字。
+-- 		1=1：这是一个恒为真的条件，通常用于避免在拼接动态 SQL 时出现语法错误。当没有其他查询条件时，1=1 不会影响查询结果。
+-- 		${ew.sqlSegment}：这是一个占位符，ew 通常是一个 Wrapper 对象，
+-- 		sqlSegment 是该对象中的一个属性，包含了动态生成的 SQL 条件片段。
+-- 		在实际执行查询时，MyBatis 会将 ${ew.sqlSegment} 替换为具体的 SQL 条件。
+-- 		wrapper.eq("username", "john_doe");  最终生成的 SQL 语句：SELECT  u.* FROM users  u WHERE 1=1 AND username = 'john_doe'
 		SELECT  u.* FROM users  u
         <where> 1=1 ${ew.sqlSegment}</where>
 	</select>

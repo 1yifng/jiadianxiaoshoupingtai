@@ -16,4 +16,16 @@ public interface JiadianOrderDao extends BaseMapper<JiadianOrderEntity> {
 
    List<JiadianOrderView> selectListView(Pagination page,@Param("params")Map<String,Object> params);
 
+   /**
+    * 根据 jiadian_id 和 yonghu_id 查询订单记录
+    * @param jiadianId 商品 ID
+    * @param yonghuId 用户 ID
+    * @return 订单记录
+    */
+// 正确写法（返回列表）
+   List<JiadianOrderEntity> selectByJiadianIdAndYonghuId(
+           @Param("jiadianId") Integer jiadianId,
+           @Param("yonghuId") Integer yonghuId
+   );
+
 }

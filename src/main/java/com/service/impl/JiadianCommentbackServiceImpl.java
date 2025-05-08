@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.dao.JiadianCommentbackDao;
 import com.dao.JiadianDao;
+import com.dao.JiadianOrderDao;
 import com.dao.YonghuDao;
 import com.entity.JiadianCommentbackEntity;
 import com.entity.JiadianEntity;
@@ -13,15 +14,15 @@ import com.entity.view.JiadianCommentbackView;
 import com.service.*;
 import com.utils.PageUtils;
 import com.utils.Query;
+import jdk.internal.instrumentation.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 商品评价 服务实现类
@@ -38,6 +39,8 @@ public class JiadianCommentbackServiceImpl extends ServiceImpl<JiadianCommentbac
     private YonghuService yonghuService;
     @Autowired
     private JiadianOrderService jiadianOrderService;
+    @Autowired
+    private JiadianOrderDao jiadianOrderDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -107,17 +110,36 @@ public class JiadianCommentbackServiceImpl extends ServiceImpl<JiadianCommentbac
     }
 
     @Override
-    public void deleteCommentAndUpdateOrderType(Long commentId, Long orderId) {
-        // 删除评价
-        deleteById(commentId);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAndUpdateOrderStatus(Integer[] ids) {
+        // 先查询所有评论信息（在删除前获取数据）
+        List<JiadianCommentbackEntity> commentbacks = Arrays.stream(ids)
+                .map(this::selectById)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        // 更新订单类型为 104（已收货）
-        JiadianOrderEntity order = jiadianOrderService.selectById(orderId);
-        if (order != null) {
-            order.setJiadianOrderTypes(104);
-            jiadianOrderService.updateById(order);
-        }
+        // 执行删除操作
+        deleteBatchIds(Arrays.asList(ids));
+
+        // 更新订单状态
+        commentbacks.forEach(commentback -> {
+            // 获取订单列表（即使LIMIT 1也返回列表）
+            List<JiadianOrderEntity> orders = jiadianOrderDao.selectByJiadianIdAndYonghuId(
+                    commentback.getJiadianId(),
+                    commentback.getYonghuId()
+            );
+
+            if (!orders.isEmpty()) {
+                JiadianOrderEntity order = orders.get(0);  // 取第一条记录
+                if (order.getJiadianOrderTypes() == 105) {  // 双重校验
+                    order.setJiadianOrderTypes(104);
+                    jiadianOrderService.updateById(order);
+                }
+            }
+        });
     }
+
+
 
     @Override
     public PageUtils handleFrontendList(Map<String, Object> params, HttpServletRequest request) {
@@ -130,38 +152,5 @@ public class JiadianCommentbackServiceImpl extends ServiceImpl<JiadianCommentbac
         }
         return page;
     }
-
-//    @Override
-//    public JiadianCommentbackView handleFrontendDetail(Long id, HttpServletRequest request) {
-//        JiadianCommentbackEntity jiadianCommentback = selectById(id);
-//        if (jiadianCommentback != null) {
-//            // entity转view
-//            JiadianCommentbackView view = new JiadianCommentbackView();
-//            BeanUtils.copyProperties(jiadianCommentback, view); // 把实体数据重构到view中
-//            // 级联表
-//            JiadianEntity jiadian = jiadianService.selectById(jiadianCommentback.getJiadianId());
-//            if (jiadian != null) {
-//                BeanUtils.copyProperties(jiadian, view, new String[]{"id", "createDate"}); // 把级联的数据添加到view中,并排除id和创建时间字段
-//                view.setJiadianId(jiadian.getId());
-//            }
-//            // 级联表
-//            YonghuEntity yonghu = yonghuService.selectById(jiadianCommentback.getYonghuId());
-//            if (yonghu != null) {
-//                BeanUtils.copyProperties(yonghu, view, new String[]{"id", "createDate"}); // 把级联的数据添加到view中,并排除id和创建时间字段
-//                view.setYonghuId(yonghu.getId());
-//            }
-//            // 修改对应字典表字段
-//            dictionaryService.dictionaryConvert(view, request);
-//            return view;
-//        }
-//        return null;
-//    }
-
-//    @Override
-//    public void handleFrontendSave(JiadianCommentbackEntity jiadianCommentback) {
-//        jiadianCommentback.setCreateTime(new Date());
-//        jiadianCommentback.setInsertTime(new Date());
-//        insert(jiadianCommentback);
-//    }
 
 }

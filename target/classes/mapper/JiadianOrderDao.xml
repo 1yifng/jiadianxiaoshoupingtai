@@ -18,6 +18,16 @@
         ,a.insert_time as insertTime
         ,a.create_time as createTime
     </sql>
+
+    <select id="selectByJiadianIdAndYonghuId" resultType="com.entity.JiadianOrderEntity">
+        SELECT * FROM jiadian_order
+        WHERE jiadian_id = #{jiadianId}
+        AND yonghu_id = #{yonghuId}
+        AND jiadian_order_types = 105
+        ORDER BY id DESC  <!-- 根据主键降序确保最新 -->
+        LIMIT 1  <!-- 必须确保该限制存在 -->
+    </select>
+
     <select id="selectListView" parameterType="map" resultType="com.entity.view.JiadianOrderView" >
         SELECT
         <include refid="Base_Column_List" />

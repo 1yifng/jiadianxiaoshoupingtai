@@ -78,8 +78,8 @@ public class JiadianCommentbackController {
      * 删除 删除后将订单状态变更成已收货状态 达到可再次评价的效果
      */
     @RequestMapping("/delete")
-    public R delete(@RequestParam("commentId") Long commentId, @RequestParam("orderId") Long orderId) {
-        jiadianCommentbackService.deleteCommentAndUpdateOrderType(commentId, orderId);
+    public R delete(@RequestBody Integer[] ids) {
+        jiadianCommentbackService.deleteAndUpdateOrderStatus(ids);
         return R.ok();
     }
 
@@ -92,25 +92,4 @@ public class JiadianCommentbackController {
         return R.ok().put("data", page);
     }
 
-    /**
-     * 前端详情
-     */
-//    @RequestMapping("/detail/{id}")
-//    public R detail(@PathVariable("id") Long id, HttpServletRequest request) {
-//        JiadianCommentbackView view = jiadianCommentbackService.handleFrontendDetail(id, request);
-//        if (view != null) {
-//            return R.ok().put("data", view);
-//        } else {
-//            return R.error(511, "查不到数据");
-//        }
-//    }
-
-    /**
-     * 前端保存
-     */
-//    @RequestMapping("/add")
-//    public R add(@RequestBody JiadianCommentbackEntity jiadianCommentback) {
-//        jiadianCommentbackService.handleFrontendSave(jiadianCommentback);
-//        return R.ok();
-//    }
 }

@@ -284,55 +284,30 @@
                 // 确保替换 baseUrl
                 this.showContent=content.replaceAll("src=\"upload/","src=\""+this.baseUrl+"upload/");
             },
-            // 更新 deleteData 使用 Element UI 确认框和 Axios
-            // deleteData(data){
-            //     this.$confirm('确定要删除这条数据吗？', '提示', { // 替换 confirm
-            //         confirmButtonText: '确定',
-            //         cancelButtonText: '取消',
-            //         type: 'warning'
-            //     }).then(() => {
-            //         // 删除信息
-            //         server.post(`jiadianCommentback/delete`, [data.id]).then(res => { // 使用 server.post
-            //             if(res.code==0){
-            //                 this.$message({ type: 'success', message: '删除成功', duration: 1500, onClose: () => {
-            //                     this.fetchDataList(); // 刷新列表
-            //                 }});
-            //             }else{
-            //                 this.$message.error(res.msg);
-            //             }
-            //         }).catch(err => {
-            //              this.$message.error("请求失败");
-            //         });
-            //     }).catch(() => {
-            //          this.$message({ type: 'info', message: '已取消删除' });
-            //     });
-            // },
-
-            // 更新 deleteData 使用 Element UI 确认框和 Axios
-            deleteData(data) {
-                this.$confirm('确定要删除这条数据吗？删除后可以重新评价', '提示', {
+            // 删除评价
+            deleteData(data){
+                this.$confirm('确定要删除这条数据吗？', '提示', { // 替换 confirm
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // 调用新的删除接口，需要传递评论ID和订单ID
-                    server.post('jiadianCommentback/delete', {
-                        commentId: data.id,
-                        orderId: data.jiadianOrderId // 需要确保数据中包含订单ID
-                    }).then(res => {
-                        if(res.code === 0) {
-                            this.$message.success('删除成功，可以重新评价');
-                            this.fetchDataList(); // 刷新列表
-                        } else {
+                    // 删除信息
+                    server.post(`jiadianCommentback/delete`, [data.id]).then(res => { // 使用 server.post
+                        if(res.code==0){
+                            this.$message({ type: 'success', message: '删除成功', duration: 1500, onClose: () => {
+                                this.fetchDataList(); // 刷新列表
+                            }});
+                        }else{
                             this.$message.error(res.msg);
                         }
                     }).catch(err => {
-                        this.$message.error("删除失败");
+                         this.$message.error("请求失败");
                     });
                 }).catch(() => {
-                    this.$message.info('已取消删除');
+                     this.$message({ type: 'info', message: '已取消删除' });
                 });
             },
+
             // 获取用户信息
             getUserInfo() {
                 let table = localStorage.getItem("userTable");
